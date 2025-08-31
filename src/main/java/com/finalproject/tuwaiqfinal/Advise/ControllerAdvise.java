@@ -106,7 +106,7 @@ public class ControllerAdvise {
         logger.error("Unexpected error: {}", exception.getMessage(), exception);
 
         // Return 500 Internal Server Error for unexpected exceptions
-        return ResponseEntity.status(500)
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ApiResponse("An unexpected error occurred. Please try again later."));
     }
 }
