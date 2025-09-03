@@ -1,0 +1,45 @@
+package com.finalproject.tuwaiqfinal.Model;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.Set;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+public class Hall {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
+    @JsonIgnore
+    private Owner owner;
+
+    @NotEmpty(message = "Name cannot be empty")
+    private String name;
+
+    @NotEmpty(message = "Description cannot be empty")
+    private String description;
+
+    @NotNull(message = "Status cannot be null")
+    private Boolean status;
+
+    @NotEmpty(message = "Location cannot be empty")
+    private String location;
+
+    @OneToMany(mappedBy = "hall", cascade = CascadeType.ALL)
+    private Set<SubHall> subHalls;
+
+    @OneToMany(mappedBy = "hall", cascade = CascadeType.ALL)
+    private Set<ReviewHall> reviewHalls;
+}
