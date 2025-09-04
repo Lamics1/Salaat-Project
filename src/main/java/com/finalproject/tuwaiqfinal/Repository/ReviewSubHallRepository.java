@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ReviewSubHallRepository extends JpaRepository<ReviewSubHall, Integer> {
+    ReviewSubHall findReviewSubHallById(Integer id);
 }

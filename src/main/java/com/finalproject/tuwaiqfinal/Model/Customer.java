@@ -2,8 +2,6 @@ package com.finalproject.tuwaiqfinal.Model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,17 +24,14 @@ public class Customer {
     @Column(nullable = false, unique = true)
     private String phone_number;
 
-
-    //todo: lat, lon
+    // todo: lat, lon
     @Column(nullable = false)
     private String location;
 
     @Column(nullable = false)
     private Integer age;
 
-
-    //relations
-
+    // relations
     @OneToOne
     @MapsId
     @JsonIgnore
