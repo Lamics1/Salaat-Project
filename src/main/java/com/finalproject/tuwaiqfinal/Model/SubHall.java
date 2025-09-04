@@ -23,17 +23,19 @@ public class SubHall {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "hall_id")
     @JsonIgnore
     private Hall hall;
 
     @NotEmpty(message = "Name cannot be empty")
+    @Column(nullable = false)
     private String name;
 
     @NotNull(message = "Price per hour cannot be null")
+    @Column(nullable = false)
     private Integer pricePerHour;
 
     @NotEmpty(message = "Description cannot be empty")
+    @Column(nullable = false)
     private String description;
 
     @OneToMany(mappedBy = "subHall", cascade = CascadeType.ALL)

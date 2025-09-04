@@ -23,20 +23,20 @@ public class ReviewHall {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
     @JsonIgnore
-    private Customer customer;
+    private User user;
 
     @ManyToOne
-    @JoinColumn(name = "hall_id")
     @JsonIgnore
     private Hall hall;
 
     @NotNull(message = "Rating cannot be null")
     @Min(value = 1, message = "Rating must be at least 1")
     @Max(value = 5, message = "Rating must be at most 5")
+    @Column(nullable = false)
     private Double rating;
 
     @NotEmpty(message = "Comment cannot be empty")
+    @Column(nullable = false)
     private String comment;
 }

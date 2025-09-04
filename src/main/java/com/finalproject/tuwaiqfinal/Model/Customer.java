@@ -22,28 +22,35 @@ public class Customer {
     private Integer id;
 
     @NotEmpty(message = "Phone number cannot be empty")
+    @Column(nullable = false, unique = true)
     private String phone_number;
 
+
+    //todo: lat, lon
     @NotEmpty(message = "Location cannot be empty")
+    @Column(nullable = false)
     private String location;
 
     @NotNull(message = "Age cannot be null")
+    @Column(nullable = false)
     private Integer age;
+
+    //relations
 
     @OneToOne
     @MapsId
     @JsonIgnore
     private User user;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<Booking> bookings;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<Payment> payments;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<ReviewHall> reviewHalls;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<ReviewSubHall> reviewSubHalls;
 }

@@ -25,28 +25,31 @@ public class Booking {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "customer_id")
     @JsonIgnore
-    private Customer customer;
+    private User user;
 
     @ManyToOne
-    @JoinColumn(name = "subHall_id")
     @JsonIgnore
     private SubHall subHall;
 
     @NotEmpty(message = "Status cannot be empty")
+    @Column(nullable = false)
     private String status;
 
     @NotNull(message = "Members cannot be null")
+    @Column(nullable = false)
     private Integer members;
 
     @NotNull(message = "Duration cannot be null")
+    @Column(nullable = false)
     private Integer duration_minutes;
 
     @NotNull(message = "Total price cannot be null")
+    @Column(nullable = false)
     private Integer totalPrice;
 
     @NotNull(message = "isSplit cannot be null")
+    @Column(nullable = false)
     private Boolean isSplit;
 
     @CreationTimestamp
@@ -54,9 +57,11 @@ public class Booking {
     private Timestamp created_at;
 
     @NotNull(message = "Start time cannot be null")
+    @Column(nullable = false)
     private Timestamp startAt;
 
     @NotNull(message = "End time cannot be null")
+    @Column(nullable = false)
     private Timestamp endAt;
 
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
