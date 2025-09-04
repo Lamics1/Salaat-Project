@@ -23,20 +23,23 @@ public class Hall {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "owner_id")
     @JsonIgnore
     private Owner owner;
 
     @NotEmpty(message = "Name cannot be empty")
+    @Column(nullable = false)
     private String name;
 
     @NotEmpty(message = "Description cannot be empty")
+    @Column(nullable = false)
     private String description;
 
     @NotNull(message = "Status cannot be null")
+    @Column(nullable = false)
     private Boolean status;
 
     @NotEmpty(message = "Location cannot be empty")
+    @Column(nullable = false)
     private String location;
 
     @OneToMany(mappedBy = "hall", cascade = CascadeType.ALL)

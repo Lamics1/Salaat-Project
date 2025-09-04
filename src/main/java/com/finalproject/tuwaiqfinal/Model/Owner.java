@@ -21,6 +21,7 @@ public class Owner {
     private Integer id;
 
     @NotEmpty(message = "Account serial number cannot be empty")
+    @Column(nullable = false, unique = true)
     private String account_serial_num;
 
     @OneToOne

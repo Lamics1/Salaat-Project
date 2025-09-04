@@ -25,29 +25,31 @@ public class Payment {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "customer_id")
     @JsonIgnore
-    private Customer customer;
+    private User user;
 
     @ManyToOne
-    @JoinColumn(name = "booking_id")
     @JsonIgnore
     private Booking booking;
 
     @NotNull(message = "Amount cannot be null")
-    @Column(columnDefinition = "DECIMAL(10, 2)")
+    @Column(columnDefinition = "DECIMAL(10, 2)", nullable = false)
     private BigDecimal amount;
 
     @NotEmpty(message = "Currency cannot be empty")
+    @Column(nullable = false)
     private String currency;
 
     @NotEmpty(message = "Status cannot be empty")
+    @Column(nullable = false)
     private String status;
 
     @NotEmpty(message = "Provider cannot be empty")
+    @Column(nullable = false)
     private String provider;
 
     @NotEmpty(message = "Provider reference cannot be empty")
+    @Column(nullable = false)
     private String provider_ref;
 
     private Timestamp paid_at;
