@@ -12,6 +12,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -42,10 +43,10 @@ public class User {
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
-    private Timestamp created_at;
+    private LocalDateTime created_at;
 
     @UpdateTimestamp
-    private Timestamp updated_at;
+    private LocalDateTime updated_at;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
