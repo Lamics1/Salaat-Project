@@ -9,5 +9,7 @@ import java.util.List;
 
 @Repository
 public interface SubHallRepository extends JpaRepository<SubHall, Integer> {
+    SubHall findSubHallsById(Integer id);
     List<SubHall> getSubHallByHall(Hall hall);
+
 }
