@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SubHallRepository extends JpaRepository<SubHall, Integer> {
+    SubHall findSubHallsById(Integer id);
 }
