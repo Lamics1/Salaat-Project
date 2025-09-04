@@ -72,6 +72,10 @@ public class ReviewHallService {
             throw new ApiException("Review Hall not found");
         }
 
+        if (oldReviewHall.getCustomer() == null || !oldReviewHall.getCustomer().getId().equals(customer.getId())) {
+            throw new ApiException("Forbidden: cannot modify another customer's review");
+        }
+
         reviewHall.setCustomer(customer);
         reviewHall.setHall(hall);
 
