@@ -1,0 +1,75 @@
+package com.finalproject.tuwaiqfinal.Service;
+
+import com.finalproject.tuwaiqfinal.Api.ApiException;
+import com.finalproject.tuwaiqfinal.Model.Booking;
+import com.finalproject.tuwaiqfinal.Model.Hall;
+import com.finalproject.tuwaiqfinal.Model.Owner;
+import com.finalproject.tuwaiqfinal.Model.SubHall;
+import com.finalproject.tuwaiqfinal.Repository.BookingRepository;
+import com.finalproject.tuwaiqfinal.Repository.HallRepository;
+import com.finalproject.tuwaiqfinal.Repository.OwnerRepository;
+import com.finalproject.tuwaiqfinal.Repository.SubHallRepository;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+@AllArgsConstructor
+public class SubhallService {
+
+    private final HallRepository hallRepository;
+    private final SubHallRepository subHallRepository;
+    private final OwnerRepository ownerRepository;
+
+    //todo: review subhall service
+
+    public SubHall getSingleSubhall(Integer subHallId){
+        return subHallRepository.findById(subHallId)
+                .orElseThrow(()-> new ApiException("sub hall not found"));
+    }
+
+    public void addSubHall(Integer hallId ,SubHall subHall){
+        Hall hall = hallRepository.findById(hallId)
+                .orElseThrow(()-> new ApiException("hall not found"));
+
+        subHall.setHall(hall);
+        subHallRepository.save(subHall);
+    }
+
+    public void updateSubHall(Integer subHallId,SubHall subHall){
+        SubHall oldSubHall = subHallRepository.findById(subHallId)
+                .orElseThrow(()-> new ApiException("sub hall not found"));
+
+        oldSubHall.setName(subHall.getName());
+        oldSubHall.setDescription(subHall.getDescription());
+        oldSubHall.setPricePerHour(subHall.getPricePerHour());
+        //todo:check Bookings setting
+        Hall hall = hallRepository.findById(subHall.getHall().getId())
+                .orElseThrow(()-> new ApiException("hall not found"));
+        oldSubHall.setHall(hall);
+        subHallRepository.save(oldSubHall);
+    }
+
+    //cannot delete because cascade
+    
+    public void deleteSubhall(Integer ownerId, Integer subHallId){
+        Owner owner = ownerRepository.findById(ownerId)
+                .orElseThrow(()-> new ApiException("owner not found"));
+        
+        SubHall subHall = subHallRepository.findById(subHallId)
+                .orElseThrow(()-> new ApiException("sub hall not found"));
+        
+        Hall hall = hallRepository.findById(subHall.getHall().getId())
+                .orElseThrow(()-> new ApiException("hall not found"));
+        
+        if (!subHall.getHall().getOwner().getId().equals(owner.getId()))
+            throw new ApiException("forbidden access");
+
+        if (!subHall.getHall().equals(hall))
+            throw new ApiException("subHall is not assigned with this main hall");
+
+        subHall.setHall(null);
+        subHallRepository.delete(subHall);
+    }
+}
