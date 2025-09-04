@@ -59,7 +59,7 @@ public class GameService {
           throw new ApiException("Game not found");
       }
 
-      game.setSubHall(subHall);
+      oldGame.setSubHall(subHall);
 
       oldGame.setColor(game.getColor());
       oldGame.setIsAvailable(game.getIsAvailable());
