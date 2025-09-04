@@ -44,7 +44,10 @@ public class SubhallService {
         oldSubHall.setName(subHall.getName());
         oldSubHall.setDescription(subHall.getDescription());
         oldSubHall.setPricePerHour(subHall.getPricePerHour());
-        //todo:check Bookings setting
+
+        if (subHall.getHall() == null || subHall.getHall().getId() == null)
+            throw new ApiException("hall id is required");
+
         Hall hall = hallRepository.findById(subHall.getHall().getId())
                 .orElseThrow(()-> new ApiException("hall not found"));
         oldSubHall.setHall(hall);
@@ -59,7 +62,7 @@ public class SubhallService {
         
         SubHall subHall = subHallRepository.findById(subHallId)
                 .orElseThrow(()-> new ApiException("sub hall not found"));
-        
+
         Hall hall = hallRepository.findById(subHall.getHall().getId())
                 .orElseThrow(()-> new ApiException("hall not found"));
         
