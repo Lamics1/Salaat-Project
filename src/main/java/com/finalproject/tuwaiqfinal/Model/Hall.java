@@ -8,7 +8,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Getter
@@ -41,6 +44,13 @@ public class Hall {
     @NotEmpty(message = "Location cannot be empty")
     @Column(nullable = false)
     private String location;
+
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime created_at;
+
+    @UpdateTimestamp
+    private LocalDateTime updated_at;
 
     @OneToMany(mappedBy = "hall", cascade = CascadeType.ALL)
     private Set<SubHall> subHalls;

@@ -10,6 +10,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -24,7 +28,7 @@ public class ReviewSubHall {
 
     @ManyToOne
     @JsonIgnore
-    private User user;
+    private Customer customer;
 
     @ManyToOne
     @JsonIgnore
@@ -39,4 +43,10 @@ public class ReviewSubHall {
     @NotEmpty(message = "Comment cannot be empty")
     @Column(nullable = false)
     private String comment;
+
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime created_at;
+
+
 }

@@ -12,6 +12,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -26,15 +27,15 @@ public class Payment {
 
     @ManyToOne
     @JsonIgnore
-    private User user;
+    private Customer customer;
 
     @ManyToOne
     @JsonIgnore
     private Booking booking;
 
     @NotNull(message = "Amount cannot be null")
-    @Column(columnDefinition = "DECIMAL(10, 2)", nullable = false)
-    private BigDecimal amount;
+    @Column(columnDefinition = "DOUBLE", nullable = false)
+    private Double amount;
 
     @NotEmpty(message = "Currency cannot be empty")
     @Column(nullable = false)
@@ -52,9 +53,11 @@ public class Payment {
     @Column(nullable = false)
     private String provider_ref;
 
-    private Timestamp paid_at;
+    private LocalDateTime paid_at;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
-    private Timestamp created_at;
+    private LocalDateTime created_at;
+
+
 }
