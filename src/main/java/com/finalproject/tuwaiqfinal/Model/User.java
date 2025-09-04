@@ -25,17 +25,18 @@ public class User {
     private Integer id;
 
     @NotEmpty(message = "Username cannot be empty")
-    @Column(nullable = false)
-    private String user_name;
+    @Column(nullable = false, unique = true)
+    private String username;
 
     @NotEmpty(message = "Password cannot be empty")
+    @Column(nullable = false)
     private String password;
 
     @Email(message = "Invalid email format")
     @Column(unique = true, nullable = false)
     private String email;
 
-    @Pattern(regexp = "^(CUSTOMER|OWNER|ADMIN)$", message = "Role must be CUSTOMER, OWNER, or ADMIN")
+    @Pattern(regexp = "^(CUSTOMER|OWNER)$", message = "Role must be CUSTOMER, OWNER")
     @Column(nullable = false)
     private String role;
 
