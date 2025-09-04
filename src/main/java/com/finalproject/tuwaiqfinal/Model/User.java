@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Check;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -19,21 +20,19 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Check(constraints = "LENGTH(password) >=8")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotEmpty(message = "Username cannot be empty")
     @Column(nullable = false, unique = true)
     private String username;
 
-    @NotEmpty(message = "Password cannot be empty")
     @Column(nullable = false)
     private String password;
 
-    @Email(message = "Invalid email format")
     @Column(unique = true, nullable = false)
     private String email;
 
