@@ -11,6 +11,8 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Getter
@@ -26,7 +28,7 @@ public class Booking {
 
     @ManyToOne
     @JsonIgnore
-    private User user;
+    private Customer customer;
 
     @ManyToOne
     @JsonIgnore
@@ -54,15 +56,15 @@ public class Booking {
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
-    private Timestamp created_at;
+    private LocalDateTime created_at;
 
     @NotNull(message = "Start time cannot be null")
     @Column(nullable = false)
-    private Timestamp startAt;
+    private LocalDateTime startAt;
 
     @NotNull(message = "End time cannot be null")
     @Column(nullable = false)
-    private Timestamp endAt;
+    private LocalDateTime endAt;
 
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
     private Set<Payment> payments;
