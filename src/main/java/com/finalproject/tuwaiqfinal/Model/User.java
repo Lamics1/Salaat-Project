@@ -1,9 +1,6 @@
 package com.finalproject.tuwaiqfinal.Model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +9,6 @@ import org.hibernate.annotations.Check;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Getter
@@ -20,7 +16,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Check(constraints = "LENGTH(password) >=8")
+@Check(constraints = "LENGTH(password) >= 8")
 public class User {
 
     @Id
@@ -36,7 +32,6 @@ public class User {
     @Column(unique = true, nullable = false)
     private String email;
 
-    @Pattern(regexp = "^(CUSTOMER|OWNER)$", message = "Role must be CUSTOMER, OWNER")
     @Column(nullable = false)
     private String role;
 
