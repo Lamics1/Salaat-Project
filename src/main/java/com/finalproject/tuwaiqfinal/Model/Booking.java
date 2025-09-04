@@ -34,6 +34,7 @@ public class Booking {
     @JsonIgnore
     private SubHall subHall;
 
+    // todo: pending - paid -
     @NotEmpty(message = "Status cannot be empty")
     @Column(nullable = false)
     private String status;
