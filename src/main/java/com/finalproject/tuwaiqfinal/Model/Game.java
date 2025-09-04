@@ -21,21 +21,22 @@ public class Game {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "subHall_id")
     @JsonIgnore
     private SubHall subHall;
 
     @ManyToOne
-    @JoinColumn(name = "booking_id")
     @JsonIgnore
     private Booking booking;
 
     @NotEmpty(message = "Color cannot be empty")
+    @Column(nullable = false)
     private String color;
 
     @NotNull(message = "isAvailable cannot be null")
+    @Column(nullable = false)
     private Boolean isAvailable;
 
     @NotNull(message = "Number of players cannot be null")
+    @Column(nullable = false)
     private Integer numberOfPlayer;
 }
