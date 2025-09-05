@@ -32,10 +32,14 @@ public class CustomerController {
         return ResponseEntity.status(200).body(new ApiResponse("customer updated successfully"));
     }
 
-    @DeleteMapping("delete/customer/{customer_id}")
+    @DeleteMapping("/delete/customer/{customer_id}")
     public ResponseEntity<?> deleteCustomer(@PathVariable Integer customer_id) {
         customerService.deleteCustomer(customer_id);
         return ResponseEntity.status(200).body(new ApiResponse("customer deleted successfully"));
     }
 
+    @GetMapping("/analyse")
+    public ResponseEntity<?> analyseGame(@RequestBody byte[] image){
+        return ResponseEntity.status(200).body(customerService.analyseGame(image));
+    }
 }
