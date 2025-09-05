@@ -199,11 +199,14 @@ public class bookingService {
         if(booking.getStatus().equals("cancelled")) // or rejected
             throw new ApiException("booking already cancelled");
 
-        /// 5- release game availability
-        Game game = gameRepository.findGameBySubHall(booking.getSubHall());
-        game.setIsAvailable(true);
 
-        gameRepository.save(game);
+        /// 5- release game availability for this booking
+        Game game = gameRepository.findByBooking(booking);
+        if (game != null) {
+            game.setIsAvailable(true);
+            game.setBooking(null);
+            gameRepository.save(game);
+        }
 
         /// 6- delete
         bookingRepository.delete(booking);

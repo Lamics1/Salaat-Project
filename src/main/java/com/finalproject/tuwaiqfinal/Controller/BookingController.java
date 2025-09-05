@@ -2,7 +2,6 @@ package com.finalproject.tuwaiqfinal.Controller;
 
 import com.finalproject.tuwaiqfinal.Api.ApiResponse;
 import com.finalproject.tuwaiqfinal.DTOin.BookingDTO;
-import com.finalproject.tuwaiqfinal.Model.Game;
 import com.finalproject.tuwaiqfinal.Service.GameService;
 import com.finalproject.tuwaiqfinal.Service.bookingService;
 import jakarta.validation.Valid;
@@ -46,13 +45,4 @@ public class BookingController {
         return ResponseEntity.status(200).body(new ApiResponse("booking deleted successfully"));
     }
 
-    //todo: this temp endpoint i will delete it:
-//    @PostMapping("/add/owner/{owner_id}/hall/{hall_id}/subhall/{subhall_id}")
-//    public ResponseEntity<?> addGame(@PathVariable Integer owner_id,
-//                                     @PathVariable Integer hall_id,
-//                                     @PathVariable Integer subhall_id,
-//                                     @Valid @RequestBody Game game) {
-//        gameService.AddGame(owner_id, hall_id, subhall_id, game);
-//        return ResponseEntity.status(200).body(new ApiResponse("game added successfully"));
-//    }
 }
