@@ -39,7 +39,7 @@ public class GameService {
         if (subHall == null) {
             throw new ApiException("subHall not found");
         }
-        game.setSubHall(subHall);
+        game.setSubHall(subHall); // todo: link game with a booking (take booking id from parameter)
         gameRepository.save(game);
     }
   public void UpdateGame(Integer owner_id, Integer hall_id, Integer subHall_id, Integer game_id , Game game ){

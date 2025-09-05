@@ -81,7 +81,7 @@ public class bookingService {
         Booking booking = new Booking();
         booking.setCustomer(customer);
         booking.setSubHall(subHall);
-        booking.setStatus("pending"); // not present at dto
+        booking.setStatus("initiated"); // not present at dto
         booking.setMembers(bookingDTO.getMembers());
         booking.setDuration_minutes(bookingDTO.getDuration_minutes());
         booking.setTotalPrice(totalPrice);
