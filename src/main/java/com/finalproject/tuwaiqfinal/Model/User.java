@@ -16,7 +16,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Check(constraints = "LENGTH(password) >= 8")
 public class User {
 
     @Id
