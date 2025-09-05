@@ -2,6 +2,7 @@ package com.finalproject.tuwaiqfinal.Service;
 
 import com.finalproject.tuwaiqfinal.Api.ApiException;
 import com.finalproject.tuwaiqfinal.DTOin.CustomerDTO;
+import com.finalproject.tuwaiqfinal.DTOout.AnalyseGameDTO;
 import com.finalproject.tuwaiqfinal.Model.Customer;
 import com.finalproject.tuwaiqfinal.Model.User;
 import com.finalproject.tuwaiqfinal.Repository.CustomerRepository;
@@ -14,10 +15,14 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class CustomerService {
-
+//  repos DI
     private final CustomerRepository customerRepository;
     private final UserRepository userRepository;
+
+//  services DI
+    private final AiService aiService;
     private final WhatsAppService whatsAppService;
+
     /// 1- get customer by his id
     public Customer getCustomer(Integer customerId){
 
@@ -114,6 +119,10 @@ public class CustomerService {
         // hence, no need for deleting booking that related with customer.
         /// 3- delete parent:
         userRepository.delete(customer.getUser());
+    }
+
+    public AnalyseGameDTO analyseGame(byte[] gameImage){
+        return aiService.analyzeImage(gameImage);
     }
 
 
