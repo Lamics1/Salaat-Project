@@ -55,11 +55,14 @@ public class CustomerService {
                         ,null
                         ,null);
 
-        /// 3- save customer
-        customerRepository.save(customer);
 
         ///  4- save user
         userRepository.save(user);
+
+        /// 3- save customer
+        customerRepository.save(customer);
+
+
     }
 
 
