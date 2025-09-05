@@ -1,19 +1,14 @@
 package com.finalproject.tuwaiqfinal.Model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Check;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Getter
@@ -27,22 +22,15 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotEmpty(message = "Username cannot be empty")
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, name = "username")
     private String username;
 
-    @NotEmpty(message = "Password cannot be empty")
-    @Size(min = 8, max = 128, message = "Password must be 8-128 characters")
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(nullable = false)
     private String password;
 
-    @Email(message = "Invalid email format")
-    @NotEmpty(message = "Email cannot be empty")
     @Column(unique = true, nullable = false)
     private String email;
 
-    @Pattern(regexp = "^(CUSTOMER|OWNER)$", message = "Role must be CUSTOMER, OWNER")
     @Column(nullable = false)
     private String role;
 
