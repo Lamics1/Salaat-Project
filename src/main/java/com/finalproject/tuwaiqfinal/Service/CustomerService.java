@@ -17,7 +17,7 @@ public class CustomerService {
 
     private final CustomerRepository customerRepository;
     private final UserRepository userRepository;
-
+    private final WhatsAppService whatsAppService;
     /// 1- get customer by his id
     public Customer getCustomer(Integer customerId){
 
@@ -62,7 +62,7 @@ public class CustomerService {
         /// 3- save customer
         customerRepository.save(customer);
 
-
+        whatsAppService.sendText(customerDTO.getPhoneNumber(),"اهلا وسهلا, ",customerDTO.getUsername()," .نورت موقع صالات عندنا تقدر تكتشف كل الصالات القريبة منك , وتتصفح الألعاب المتوفرة , ,وتشوف الأسعار وتحجز بكل سهولة . جاهز تختار صالتك وتعيش الجو ؟ ");
     }
 
 
