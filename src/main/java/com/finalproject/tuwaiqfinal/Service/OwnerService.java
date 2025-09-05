@@ -16,7 +16,7 @@ import java.util.List;
 public class OwnerService {
     private final OwnerRepository ownerRepository;
     private final UserRepository userRepository;
-
+    private final WhatsAppService whatsAppService;
 
     public List<Owner> getAllOwners(){
         return ownerRepository.findAll();
