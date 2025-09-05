@@ -34,23 +34,21 @@ public class Booking {
     @JsonIgnore
     private SubHall subHall;
 
+    // todo: pending - paid - (moyasar status)
     @NotEmpty(message = "Status cannot be empty")
     @Column(nullable = false)
     private String status;
 
-    @NotNull(message = "Members cannot be null")
     @Column(nullable = false)
     private Integer members;
 
-    @NotNull(message = "Duration cannot be null")
     @Column(nullable = false)
     private Integer duration_minutes;
 
     @NotNull(message = "Total price cannot be null")
     @Column(nullable = false)
-    private Integer totalPrice;
+    private Double totalPrice;
 
-    @NotNull(message = "isSplit cannot be null")
     @Column(nullable = false)
     private Boolean isSplit;
 
@@ -58,7 +56,6 @@ public class Booking {
     @Column(nullable = false, updatable = false)
     private LocalDateTime created_at;
 
-    @NotNull(message = "Start time cannot be null")
     @Column(nullable = false)
     private LocalDateTime startAt;
 

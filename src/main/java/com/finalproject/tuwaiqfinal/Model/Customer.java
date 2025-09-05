@@ -2,13 +2,11 @@ package com.finalproject.tuwaiqfinal.Model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Check;
 
 import java.util.Set;
 
@@ -17,28 +15,23 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Check(constraints = "age >= 12")
 public class Customer {
 
     @Id
     private Integer id;
 
-    @NotEmpty(message = "Phone number cannot be empty")
-    @Pattern(regexp = "^\\+9665\\d{8}$", message = "Phone number must be a valid Saudi mobile in the format +9665XXXXXXXX")
     @Column(nullable = false, unique = true)
     private String phone_number;
 
-
-    //todo: lat, lon
-    @NotEmpty(message = "Location cannot be empty")
+    // todo: lat, lon
     @Column(nullable = false)
     private String location;
 
-    @NotNull(message = "Age cannot be null")
     @Column(nullable = false)
     private Integer age;
 
-    //relations
-
+    // relations
     @OneToOne
     @MapsId
     @JsonIgnore
