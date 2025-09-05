@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,7 +35,7 @@ public class Booking {
     @JsonIgnore
     private SubHall subHall;
 
-    // todo: pending - paid - (moyasar status)
+
     @NotEmpty(message = "Status cannot be empty")
     @Column(nullable = false)
     private String status;
@@ -50,7 +51,7 @@ public class Booking {
     private Double totalPrice;
 
     @Column(nullable = false)
-    private Boolean isSplit;
+    private Boolean isSplit; // todo:delete this feature.
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)

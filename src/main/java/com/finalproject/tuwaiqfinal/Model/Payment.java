@@ -33,6 +33,9 @@ public class Payment {
     @JsonIgnore
     private Booking booking;
 
+    @Column(unique = true, nullable = true)
+    private String moyasarPaymentId; // From Moyasar API response
+
     @NotNull(message = "Amount cannot be null")
     @Column(columnDefinition = "DOUBLE", nullable = false)
     private Double amount;
@@ -45,13 +48,6 @@ public class Payment {
     @Column(nullable = false)
     private String status;
 
-    @NotEmpty(message = "Provider cannot be empty")
-    @Column(nullable = false)
-    private String provider;
-
-    @NotEmpty(message = "Provider reference cannot be empty")
-    @Column(nullable = false)
-    private String provider_ref;
 
     private LocalDateTime paid_at;
 
