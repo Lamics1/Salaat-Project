@@ -2,11 +2,9 @@ package com.finalproject.tuwaiqfinal.Controller;
 
 import com.finalproject.tuwaiqfinal.Api.ApiResponse;
 import com.finalproject.tuwaiqfinal.DTOin.OwnerDTO;
-import com.finalproject.tuwaiqfinal.Model.Owner;
-import com.finalproject.tuwaiqfinal.Service.OwnerService;
+import com.finalproject.tuwaiqfinal.Service.HallService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/owner")
 @AllArgsConstructor
 public class OwnerController {
-    private final OwnerService ownerService;
+    private final HallService.OwnerService ownerService;
 
     @GetMapping("/get")
     public ResponseEntity<?> getAllOwners(){
