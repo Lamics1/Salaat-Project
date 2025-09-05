@@ -14,6 +14,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class GameService {
+
+//    repos DI
     private final GameRepository gameRepository;
     private final OwnerRepository ownerRepository;
     private final HallRepository hallRepository;
@@ -87,4 +89,7 @@ public class GameService {
         }
         gameRepository.delete(game);
     }
+
+
+
 }

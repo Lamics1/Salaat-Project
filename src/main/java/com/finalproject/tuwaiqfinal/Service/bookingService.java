@@ -24,6 +24,7 @@ public class bookingService {
     private final CustomerRepository customerRepository;
     private final SubHallRepository subHallRepository;
     private final GameRepository gameRepository;
+    private final MailService mailService;
 
     // 1- get all booking by one customer:
     public List<Booking> getBookingByCustomer(Integer customerId) {
@@ -93,6 +94,13 @@ public class bookingService {
         gameRepository.save(game);
 
         bookingRepository.save(booking);
+
+        String verifyUrl = "https://salat.com/verify?email=" + customer.getUser().getUsername();
+        try {
+            mailService.sendWelcomeHtml(customer.getUser().getEmail(), customer.getUser().getUsername(), verifyUrl);
+        } catch
+        (Exception ignored) {}
+
     }
 
 
