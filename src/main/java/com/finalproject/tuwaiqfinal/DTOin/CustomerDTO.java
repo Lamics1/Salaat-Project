@@ -10,10 +10,10 @@ import lombok.Setter;
 @AllArgsConstructor
 public class CustomerDTO {
 
-    @NotEmpty(message = "Username cannot be empty")
+
     private Integer user_id;
 
-    @NotEmpty(message = "Password cannot be empty")
+    @NotEmpty(message = "username cannot be empty")
     private String username;
 
     @NotEmpty(message = "Password cannot be empty")
