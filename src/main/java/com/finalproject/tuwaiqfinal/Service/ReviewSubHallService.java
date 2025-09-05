@@ -103,8 +103,6 @@ public class ReviewSubHallService {
         if (reviewSubHall == null) {
             throw new ApiException("Review SubHall not found");
         }
-        reviewSubHallRepository.delete(reviewSubHall);
-
 
         if (reviewSubHall.getCustomer() == null || !reviewSubHall.getCustomer().getId().equals(customer.getId())) {
             throw new ApiException("Forbidden: cannot delete another customer's review");
@@ -112,7 +110,7 @@ public class ReviewSubHallService {
         if (reviewSubHall.getSubHall() == null || !reviewSubHall.getSubHall().getId().equals(subHall.getId())) {
             throw new ApiException("Review does not belong to this Sub Hall");
         }
-
+        reviewSubHallRepository.delete(reviewSubHall);
 
     }
 }
