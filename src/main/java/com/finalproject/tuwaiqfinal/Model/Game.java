@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Set;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -24,9 +26,9 @@ public class Game {
     @JsonIgnore
     private SubHall subHall;
 
-    @ManyToOne
-    @JsonIgnore
-    private Booking booking;
+    // change relation
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "game")
+    private Set<Booking> bookings;
 
     @NotEmpty(message = "Color cannot be empty")
     @Column(nullable = false)

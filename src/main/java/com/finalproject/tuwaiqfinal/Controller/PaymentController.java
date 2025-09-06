@@ -40,18 +40,6 @@ public class    PaymentController {
     }
 
 
-    // todo: temp endpoint:
-    @PostMapping("/add/{owner_id}/{hall_id}/{subHall_id}")
-    public ResponseEntity<String> addGame(@PathVariable Integer owner_id,
-                                          @PathVariable Integer hall_id,
-                                          @PathVariable Integer subHall_id,
-                                          @RequestBody Game game) {
-
-        gameService.AddGame(owner_id, hall_id, subHall_id, game);
-        return ResponseEntity.ok("Game added successfully ✅");
-    }
-
-
     // Callback endpoint to handle Moyasar response
     @GetMapping("/callback")
     public ResponseEntity<String> handlePaymentCallback(

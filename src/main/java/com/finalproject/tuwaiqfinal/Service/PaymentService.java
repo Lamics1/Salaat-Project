@@ -9,9 +9,11 @@ import com.finalproject.tuwaiqfinal.DTOout.MoyasarPaymentResponseDTO;
 import com.finalproject.tuwaiqfinal.DTOout.PaymentCreationResponseDTO;
 import com.finalproject.tuwaiqfinal.Model.Booking;
 import com.finalproject.tuwaiqfinal.Model.Customer;
+import com.finalproject.tuwaiqfinal.Model.Game;
 import com.finalproject.tuwaiqfinal.Model.Payment;
 import com.finalproject.tuwaiqfinal.Repository.BookingRepository;
 import com.finalproject.tuwaiqfinal.Repository.CustomerRepository;
+import com.finalproject.tuwaiqfinal.Repository.GameRepository;
 import com.finalproject.tuwaiqfinal.Repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +42,8 @@ public class PaymentService {
     private static final String CURRENCY = "SAR";
     @Autowired
     private PaymentRepository paymentRepository;
+    @Autowired
+    private GameRepository gameRepository;
 
 
     // 1- create method for Payment process:
@@ -118,7 +122,7 @@ public class PaymentService {
     public PaymentCreationResponseDTO customerPayment(Integer customerId,
                                                       Integer bookingId,
                                                       PaymentRequest paymentRequest) {
-        ;
+
 
         /// 1- check if customer exist
         Customer customer = customerRepository.findCustomerById(customerId);
@@ -188,6 +192,11 @@ public class PaymentService {
             }else{
                 booking.setStatus(message); // APPROVED
                 bookingRepository.save(booking);
+
+                // 4. update game availability
+                Game game = booking.getGame();
+                game.setIsAvailable(false);
+                gameRepository.save(game);
             }
         }
     }
