@@ -3,12 +3,16 @@ package com.finalproject.tuwaiqfinal.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.finalproject.tuwaiqfinal.Api.ApiException;
 import com.finalproject.tuwaiqfinal.DTOout.AnalyseGameDTO;
+import com.finalproject.tuwaiqfinal.Model.ReviewHall;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -87,6 +91,45 @@ public class AiService {
         } catch (Exception e) {
             log.error("Failed to analyze image / parse JSON", e);
             return new AnalyseGameDTO(null,null,null,null,null,null);
+        }
+    }
+
+    public String hallFeedback(List<ReviewHall> reviews) {
+
+        // validate from reviews list
+        if(reviews.isEmpty()) {
+            throw new ApiException("No reviews available for analysis");
+        }
+
+        // extract the comment only using stream()
+        String allComment = reviews.stream()
+                .map(ReviewHall::getComment)
+                .filter(comment -> comment != null && !comment.trim().isEmpty())
+                .collect(Collectors.joining("-"));
+
+        // set up the prompt
+        String prompt = """
+                قم بتحليل التعليقات التالية التي كتبها العملاء عن القاعة:
+                الجواب يكون نص عادي بدون أي علامات Markdown أو نجوم
+                %s
+                
+                المطلوب منك:
+                1. إعطاء ملخص عام عن هذه التعليقات.
+                2. تحديد الانطباع العام (إيجابي / سلبي / محايد).
+                3. ذكر أبرز النقاط الإيجابية التي يكررها العملاء.
+                4. استخراج التعليقات السلبية أو الملاحظات المتكررة.
+                5. تقديم نصائح عملية موجهة لصاحب القاعة بناءً على هذه الملاحظات السلبية (كيف يمكنه تحسين القاعة أو الخدمة).
+                
+                
+                """.formatted(allComment);
+
+        try {
+            return chatClient
+                    .prompt(prompt)
+                    .call()
+                    .content();
+        } catch (Exception e) {
+            return "Unable to analyze reviews at this time. Please try again later.";
         }
     }
 }
