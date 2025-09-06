@@ -17,7 +17,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BookingController {
     private final bookingService bookingService;
-    private final GameService gameService;
 
     @GetMapping("/get/customer/{customer_id}")
     public ResponseEntity<?> getBookingByCustomer(@PathVariable Integer customer_id) {
@@ -32,12 +31,11 @@ public class BookingController {
         return ResponseEntity.status(200).body(new ApiResponse("booking added successfully"));
     }
 
-    @PutMapping("/update/customer/{customer_id}/subhall/{subhall_id}/booking/{booking_id}")
+    @PutMapping("/update/customer/{customer_id}/booking/{booking_id}")
     public ResponseEntity<?> updateBooking(@PathVariable Integer customer_id,
-                                           @PathVariable Integer subhall_id,
                                            @PathVariable Integer booking_id,
                                            @Valid @RequestBody BookingDTO bookingDTO) {
-        bookingService.updateBooking(customer_id, subhall_id, booking_id, bookingDTO);
+        bookingService.updateBooking(customer_id, booking_id, bookingDTO);
         return ResponseEntity.status(200).body(new ApiResponse("booking updated successfully"));
     }
 

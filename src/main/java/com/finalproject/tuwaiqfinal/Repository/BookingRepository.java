@@ -25,11 +25,42 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
     List<Booking> findBookingsByCustomer_Id(Integer customerId);
 
-    @Query("select b from Booking b where b.subHall.id=:subHall and " +
-            "(b.startAt <: endAt AND b.endAt >: startAt) OR " +
-            "(b.startAt >=:startAt AND b.startAt <:endAt)")
+    @Query("""
+select b from Booking b
+where b.subHall.id = :subHall
+  and (
+        (b.startAt < :endAt and b.endAt > :startAt)
+     or (b.startAt >= :startAt and b.startAt < :endAt)
+  )
+""")
     List<Booking> findConflictBooking(Integer subHall,
-                                   LocalDateTime startAt,
-                                   LocalDateTime endAt);
+                                      LocalDateTime startAt,
+                                      LocalDateTime endAt);
+
+    @Query("""
+select b from Booking b
+where b.game.id = :gameId
+  and (
+        (b.startAt < :endAt and b.endAt > :startAt)
+     or (b.startAt >= :startAt and b.startAt < :endAt)
+  )
+""")
+    List<Booking> findConflictBookingsForGame(Integer gameId,
+                                              LocalDateTime startAt,
+                                              LocalDateTime endAt);
+
+    @Query("""
+select b from Booking b
+where b.game.id = :gameId
+  and b.id <> :excludeBookingId
+  and (
+        (b.startAt < :endAt and b.endAt > :startAt)
+     or (b.startAt >= :startAt and b.startAt < :endAt)
+  )
+""")
+    List<Booking> findConflictBookingsForGameExcludingBooking(Integer gameId,
+                                                              LocalDateTime startAt,
+                                                              LocalDateTime endAt,
+                                                              Integer excludeBookingId);
 
 }
