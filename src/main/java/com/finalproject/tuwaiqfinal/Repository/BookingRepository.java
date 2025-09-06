@@ -12,7 +12,10 @@ import java.util.List;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Integer> {
+
     List<Booking> findBookingsBySubHall(SubHall subHall);
+
+    List<Booking> findBySubHall_Hall_IdAndStatusIgnoreCase(Integer hallId, String status);
 
     Booking findBookingsById(Integer id);
 

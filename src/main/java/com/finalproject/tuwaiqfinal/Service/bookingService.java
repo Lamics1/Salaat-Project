@@ -2,14 +2,8 @@ package com.finalproject.tuwaiqfinal.Service;
 
 import com.finalproject.tuwaiqfinal.Api.ApiException;
 import com.finalproject.tuwaiqfinal.DTOin.BookingDTO;
-import com.finalproject.tuwaiqfinal.Model.Booking;
-import com.finalproject.tuwaiqfinal.Model.Customer;
-import com.finalproject.tuwaiqfinal.Model.Game;
-import com.finalproject.tuwaiqfinal.Model.SubHall;
-import com.finalproject.tuwaiqfinal.Repository.BookingRepository;
-import com.finalproject.tuwaiqfinal.Repository.CustomerRepository;
-import com.finalproject.tuwaiqfinal.Repository.GameRepository;
-import com.finalproject.tuwaiqfinal.Repository.SubHallRepository;
+import com.finalproject.tuwaiqfinal.Model.*;
+import com.finalproject.tuwaiqfinal.Repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +19,7 @@ public class bookingService {
     private final SubHallRepository subHallRepository;
     private final GameRepository gameRepository;
     private final MailService mailService;
+    private final HallRepository hallRepository;
 
     // 1- get all booking by one customer:
     public List<Booking> getBookingByCustomer(Integer customerId) {
@@ -219,4 +214,30 @@ public class bookingService {
         /// 6- delete
         bookingRepository.delete(booking);
     }
+    public List<Booking> getInitiatedByHall(Integer ownerId, Integer hallId) {
+
+        Hall hall = hallRepository.findHallById(hallId);
+        if (hall == null) {
+            throw new ApiException("hall not found");
+        }
+
+        if (hall.getOwner() == null || !hall.getOwner().getId().equals(ownerId)) {
+            throw new ApiException("forbidden: owner does not own this hall");
+        }
+        return bookingRepository.findBySubHall_Hall_IdAndStatusIgnoreCase(hallId, "initiated");
+    }
+
+    public List<Booking> getApprovedByHall(Integer ownerId, Integer hallId) {
+
+        Hall hall = hallRepository.findHallById(hallId);
+        if (hall == null) {
+            throw new ApiException("hall not found");
+        }
+
+        if (hall.getOwner() == null || !hall.getOwner().getId().equals(ownerId)) {
+            throw new ApiException("forbidden: owner does not own this hall");
+        }
+        return bookingRepository.findBySubHall_Hall_IdAndStatusIgnoreCase(hallId, "Approved");
+    }
+
 }
