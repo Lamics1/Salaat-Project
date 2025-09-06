@@ -246,7 +246,7 @@ public class bookingService {
         LocalDateTime endTime = startTime.plusMinutes(durationMinutes);
 
         // 3- Get all games in this subhall
-        List<Game> allGames = gameRepository.findAllGamesBySubHallAndIsAvailable(subHall, true);
+        List<Game> allGames = gameRepository.findAllBySubHallAndIsAvailable(subHall, true);
 
         // 4- Check availability for each game
         List<GameAvailabilityDTO> availableGames = new ArrayList<>();

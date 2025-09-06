@@ -13,5 +13,5 @@ public interface GameRepository extends JpaRepository<Game, Integer> {
     Game findGameById(Integer id);
 
 
-    List<Game> findAllGamesBySubHallAndIsAvailable(SubHall subHall, Boolean isAvailable);
+    List<Game> findAllBySubHallAndIsAvailable(SubHall subHall, Boolean isAvailable);
 }
