@@ -89,7 +89,4 @@ public class GameService {
         }
         gameRepository.delete(game);
     }
-
-
-
 }

@@ -67,6 +67,8 @@ public class Booking {
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
     private Set<Payment> payments;
 
-    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
-    private Set<Game> games;
+    // change the relation between booking and game
+    @ManyToOne
+    @JsonIgnore
+    private Game game;
 }
