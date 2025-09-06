@@ -2,12 +2,15 @@ package com.finalproject.tuwaiqfinal.Controller;
 
 import com.finalproject.tuwaiqfinal.Api.ApiResponse;
 import com.finalproject.tuwaiqfinal.DTOin.BookingDTO;
+import com.finalproject.tuwaiqfinal.Model.Booking;
 import com.finalproject.tuwaiqfinal.Service.GameService;
 import com.finalproject.tuwaiqfinal.Service.bookingService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/booking")
@@ -41,6 +44,18 @@ public class BookingController {
                                            @PathVariable Integer booking_id) {
         bookingService.deleteBooking(customer_id, booking_id);
         return ResponseEntity.status(200).body(new ApiResponse("booking deleted successfully"));
+    }
+
+    @GetMapping("/initiated/owner/{ownerId}/hall/{hallId}")
+    public ResponseEntity<?> getInitiatedByHall(@PathVariable Integer ownerId, @PathVariable Integer hallId) {
+        List<Booking> bookings = bookingService.getInitiatedByHall(ownerId, hallId);
+        return ResponseEntity.status(200).body(bookings);
+    }
+
+    @GetMapping("/Approved/owner/{ownerId}/hall/{hallId}")
+    public ResponseEntity<?> getApprovedByHall(@PathVariable Integer ownerId, @PathVariable Integer hallId) {
+        List<Booking> bookings = bookingService.getApprovedByHall(ownerId, hallId);
+        return ResponseEntity.status(200).body(bookings);
     }
 
 }

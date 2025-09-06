@@ -3,17 +3,10 @@ package com.finalproject.tuwaiqfinal.Service;
 import com.finalproject.tuwaiqfinal.Api.ApiException;
 import com.finalproject.tuwaiqfinal.DTOin.BookingDTO;
 import com.finalproject.tuwaiqfinal.DTOin.GameAvailabilityDTO;
-import com.finalproject.tuwaiqfinal.Model.Booking;
-import com.finalproject.tuwaiqfinal.Model.Customer;
-import com.finalproject.tuwaiqfinal.Model.Game;
-import com.finalproject.tuwaiqfinal.Model.SubHall;
-import com.finalproject.tuwaiqfinal.Repository.BookingRepository;
-import com.finalproject.tuwaiqfinal.Repository.CustomerRepository;
-import com.finalproject.tuwaiqfinal.Repository.GameRepository;
-import com.finalproject.tuwaiqfinal.Repository.SubHallRepository;
+import com.finalproject.tuwaiqfinal.Model.*;
+import com.finalproject.tuwaiqfinal.Repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -27,6 +20,7 @@ public class bookingService {
     private final SubHallRepository subHallRepository;
     private final GameRepository gameRepository;
     private final MailService mailService;
+    private final HallRepository hallRepository;
 
     // 1- get all booking by one customer:
     public List<Booking> getBookingByCustomer(Integer customerId) {
@@ -69,15 +63,14 @@ public class bookingService {
         }
 
         /// 5- Auto-select the first available game
-        // 5- Auto-select the first available game
         Game game = gameRepository.findById(availableGames.get(0).getGameId())
                 .orElseThrow(() -> new ApiException("Selected game not found"));
-
 
         if(game == null) {
             throw new ApiException("Selected game not found");
         }
-        /// 6- Validate team size
+
+        /// 6- validate from team member to a game
         if(game.getNumberOfPlayer() < bookingDTO.getMembers()) {
             throw new ApiException("maximum game's members is "+game.getNumberOfPlayer());
         }
@@ -88,7 +81,6 @@ public class bookingService {
         /// 8- Final conflict check
         List<Booking> conflicts = bookingRepository.findConflictBookingsForGame(
                 game.getId(), bookingDTO.getStartAt(), endOfBooking);
-
 
         if(!conflicts.isEmpty()) {
             throw new ApiException("Game was just booked by someone else! Please try again");
@@ -111,10 +103,6 @@ public class bookingService {
         booking.setGame(game);
         bookingRepository.save(booking);
 
-        /// - change isAvailable of game to (false) => reserved.
-//        game.setIsAvailable(false);
-//        gameRepository.save(game);
-
         /// 11- Send confirmation email
         String verifyUrl = "https://salat.com/verify?email=" + customer.getUser().getUsername();
         try {
@@ -123,7 +111,6 @@ public class bookingService {
         (Exception ignored) {}
 
     }
-
 
     // 3- update booking by user (simplified - no subhall changes):
     public void updateBooking(Integer customerId,
@@ -191,7 +178,6 @@ public class bookingService {
         bookingRepository.save(oldBooking);
     }
 
-
     // 4- delete booking by customer
     public void deleteBooking(Integer customerId,Integer bookingId) {
 
@@ -218,7 +204,6 @@ public class bookingService {
         if(booking.getStatus().equals("cancelled"))
             throw new ApiException("booking already cancelled");
 
-
         /// 5- release game availability for this booking
         Game game = booking.getGame();
         if (game != null) {
@@ -230,6 +215,31 @@ public class bookingService {
         bookingRepository.delete(booking);
     }
 
+    public List<Booking> getInitiatedByHall(Integer ownerId, Integer hallId) {
+
+        Hall hall = hallRepository.findHallById(hallId);
+        if (hall == null) {
+            throw new ApiException("hall not found");
+        }
+
+        if (hall.getOwner() == null || !hall.getOwner().getId().equals(ownerId)) {
+            throw new ApiException("forbidden: owner does not own this hall");
+        }
+        return bookingRepository.findBySubHall_Hall_IdAndStatusIgnoreCase(hallId, "initiated");
+    }
+
+    public List<Booking> getApprovedByHall(Integer ownerId, Integer hallId) {
+
+        Hall hall = hallRepository.findHallById(hallId);
+        if (hall == null) {
+            throw new ApiException("hall not found");
+        }
+
+        if (hall.getOwner() == null || !hall.getOwner().getId().equals(ownerId)) {
+            throw new ApiException("forbidden: owner does not own this hall");
+        }
+        return bookingRepository.findBySubHall_Hall_IdAndStatusIgnoreCase(hallId, "approved");
+    }
 
     // 5- helper method for list available games
     public List<GameAvailabilityDTO> getAvailableGames(Integer subHallId,

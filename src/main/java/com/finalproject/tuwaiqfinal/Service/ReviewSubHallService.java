@@ -6,6 +6,7 @@ import com.finalproject.tuwaiqfinal.Repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -37,7 +38,18 @@ public class ReviewSubHallService {
         if (booking == null) {
             throw new ApiException("customer does not have a booking");
         }
+        //Prevent duplicate review
+        if (reviewSubHallRepository.existsByCustomerIdAndSubHallId(customer.getId(), subHall.getId())) {
+            throw new ApiException("duplicate review not allowed");
+        }
 
+        if (!"approved".equalsIgnoreCase(booking.getStatus())) {
+            throw new ApiException("booking must be approved to review this sub hall");
+        }
+//
+//        if (booking.getEndAt() != null && booking.getEndAt().isAfter(LocalDateTime.now())) {
+//            throw new ApiException("you can review after your session ends");
+//        }
         reviewSubHall.setSubHall(subHall);
         reviewSubHall.setCustomer(customer);
 
