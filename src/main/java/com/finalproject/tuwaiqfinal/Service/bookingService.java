@@ -21,7 +21,7 @@ public class bookingService {
     private final GameRepository gameRepository;
     private final MailService mailService;
     private final HallRepository hallRepository;
-
+    private final WhatsAppService whatsAppService;
     // 1- get all booking by one customer:
     public List<Booking> getBookingByCustomer(Integer customerId) {
 
@@ -276,5 +276,38 @@ public class bookingService {
             }
         }
         return availableGames;
+    }
+
+    public void remindUnpaidByHall(Integer ownerId, Integer hallId) {
+
+
+        Hall hall = hallRepository.findHallById(hallId);
+        if (hall == null) throw new ApiException("hall not found");
+
+
+        if (hall.getOwner() == null || !hall.getOwner().getId().equals(ownerId)) {
+            throw new ApiException("forbidden: owner does not own this hall");
+        }
+
+        List<Booking> pending = bookingRepository.findBySubHall_Hall_IdAndStatusIgnoreCase(hallId, "initiated");
+
+        for (Booking b : pending) {
+            Customer c = b.getCustomer();
+            if (c == null || c.getPhone_number() == null || c.getUser() == null) continue;
+
+            String to = c.getPhone_number();
+            String username = c.getUser().getUsername();
+
+            String body  = "تذكير بالدفع يا ";
+            String body2 = "حجزك رقم " + b.getId()
+                    + " بتاريخ " + (b.getStartAt() == null ? "" : b.getStartAt())
+                    + " في " + (b.getSubHall() != null ? b.getSubHall().getName() : "الصالة")
+                    + " — المبلغ " + b.getTotalPrice() + " ريال. ادخل حسابك وأكمل الدفع.";
+
+            try {
+                whatsAppService.sendText(to, body, username, body2);
+            } catch (Exception ignored) {}
+        }
+
     }
 }
