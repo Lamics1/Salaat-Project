@@ -165,7 +165,7 @@ public class PaymentService {
         payment.setBooking(booking);
         payment.setAmount(paymentRequest.getAmount());
         payment.setCurrency(CURRENCY);
-        payment.setStatus(moyasarResponse.getStatus()); //todo:handle null status if needed
+        payment.setStatus(moyasarResponse.getStatus());
         payment.setMoyasarPaymentId(moyasarResponse.getId());
         paymentRepository.save(payment);
 

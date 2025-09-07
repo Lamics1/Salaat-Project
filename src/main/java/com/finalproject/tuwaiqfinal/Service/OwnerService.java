@@ -7,6 +7,7 @@ import com.finalproject.tuwaiqfinal.Model.*;
 import com.finalproject.tuwaiqfinal.Repository.*;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.awt.print.Book;
@@ -25,6 +26,8 @@ public class OwnerService {
     private final SubHallRepository subHallRepository;
     private final ReviewSubHallRepository reviewSubHallRepository;
 
+    private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+
     public List<Owner> getAllOwners(){
         return ownerRepository.findAll();
     }
@@ -38,7 +41,7 @@ public class OwnerService {
         User user = new User();
 
         user.setUsername(ownerDTO.getUsername());
-        user.setPassword(ownerDTO.getPassword());   //todo: add encryption
+        user.setPassword(bCryptPasswordEncoder.encode(ownerDTO.getPassword()));
         user.setEmail(ownerDTO.getEmail());
         user.setRole("OWNER");
         userRepository.save(user);
@@ -56,7 +59,7 @@ public class OwnerService {
 
         User user = oldOwner.getUser();
         user.setUsername(ownerDTO.getUsername());
-        user.setPassword(ownerDTO.getPassword());   //todo: add encryption
+        user.setPassword(bCryptPasswordEncoder.encode(ownerDTO.getPassword()));
         user.setEmail(ownerDTO.getEmail());
         user.setRole("OWNER");
         userRepository.save(user);

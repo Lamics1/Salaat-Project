@@ -11,6 +11,7 @@ import com.finalproject.tuwaiqfinal.Repository.CustomerRepository;
 import com.finalproject.tuwaiqfinal.Repository.GameRepository;
 import com.finalproject.tuwaiqfinal.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,6 +28,8 @@ public class CustomerService {
     private final WhatsAppService whatsAppService;
     private final BookingRepository bookingRepository;
     private final GameRepository gameRepository;
+
+    private final BCryptPasswordEncoder bCryptPasswordEncoder= new BCryptPasswordEncoder();
 
 
     public List<Customer> getAllCustomers(){
@@ -55,7 +58,7 @@ public class CustomerService {
         User user  = new User();
 
         user.setUsername(customerDTO.getUsername());
-        user.setPassword(customerDTO.getPassword());
+        user.setPassword(bCryptPasswordEncoder.encode(customerDTO.getPassword()));
         user.setEmail(customerDTO.getEmail());
         user.setRole("CUSTOMER");
 
@@ -99,7 +102,7 @@ public class CustomerService {
 
         /// 3- Update user fields
         user.setUsername(dto.getUsername());
-        user.setPassword(dto.getPassword()); // Consider hashing this
+        user.setPassword(bCryptPasswordEncoder.encode(dto.getPassword()));
         user.setEmail(dto.getEmail());
 
         /// 4- Update customer fields

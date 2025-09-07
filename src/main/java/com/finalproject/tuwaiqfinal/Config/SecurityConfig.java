@@ -37,78 +37,64 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 // Permit All
                 .requestMatchers("/api/v1/customer/register", "/api/v1/owner/register").permitAll()
-                .requestMatchers("/api/v1/hall/get", "/api/v1/hall/get/{hallId}").permitAll()
-                .requestMatchers("/api/v1/review-hall/get").permitAll()
-                .requestMatchers("/api/v1/review-sub-hall/get").permitAll()
-                .requestMatchers("/api/v1/hall/get-subhalls/{hallId}").permitAll()
+                .requestMatchers("/api/v1/payments/callback").permitAll()
+                .requestMatchers("/api/v1/review-hall/getAll").permitAll()
 
-                //hasAnyAuth
-                .requestMatchers("/api/v1/payments/get/status/{statusId}").hasAnyAuthority("CUSTOMER","OWNER","ADMIN")
+
+                .requestMatchers("/api/v1/hall/get", "/api/v1/hall/get/{hallId}", "/api/v1/hall/get-subhalls/{hallId}").hasAnyAuthority("ADMIN","CUSTOMER","OWNER")
+                .requestMatchers("/api/v1/game/get").hasAnyAuthority("ADMIN","CUSTOMER","OWNER")    //todo: get dto
 
                 // Customer Authority
-                .requestMatchers("/api/v1/booking/get/customer/{customer_id}").hasAuthority("CUSTOMER")
-                .requestMatchers("/api/v1/booking/add/customer/{customer_id}/subhall/{subhall_id}").hasAuthority("CUSTOMER")
-                .requestMatchers("/api/v1/booking/update/customer/{customer_id}/booking/{booking_id}").hasAuthority("CUSTOMER")
-                .requestMatchers("/api/v1/booking/delete/customer/{customer_id}/booking/{booking_id}").hasAuthority("CUSTOMER")
-                .requestMatchers("/api/v1/customer/get/{customer_id}").hasAuthority("CUSTOMER")
-                .requestMatchers("/api/v1/customer/update/customer/{customer_id}").hasAuthority("CUSTOMER")
-                .requestMatchers("/api/v1/customer/delete/customer/{customer_id}").hasAuthority("CUSTOMER")
-                .requestMatchers("/api/v1/customer/cancel/by/{customerId}/booking/{bookingId}").hasAuthority("CUSTOMER")
-                .requestMatchers("/api/v1/review-hall/add/{customerId}/{hallId}").hasAuthority("CUSTOMER")
-                .requestMatchers("/api/v1/review-hall/update/**").hasAuthority("CUSTOMER")
-                .requestMatchers("/api/v1/review-hall/delete/{customerId}/{hallId}/{reviewHallId}").hasAuthority("CUSTOMER")
-                .requestMatchers("/api/v1/review-sub-hall/add/{customerId}/{subHallId}").hasAuthority("CUSTOMER")
-                .requestMatchers("/api/v1/review-sub-hall/update/{customerId}/{subHallId}/{ReviewSubHallId}").hasAuthority("CUSTOMER")
-                .requestMatchers("/api/v1/review-sub-hall/delete/**").hasAuthority("CUSTOMER")
-                .requestMatchers("/api/v1/payments/pay/by/{customerId}/for/{bookingId}").hasAuthority("CUSTOMER")
-                .requestMatchers("/api/v1/payments/callback").hasAuthority("CUSTOMER")
+                .requestMatchers("api/v1/customer/get").hasAuthority("CUSTOMER")
+                .requestMatchers("/api/v1/booking/get").hasAuthority("CUSTOMER")
+                .requestMatchers("/api/v1/booking/add/subhall/{subhallId}").hasAuthority("CUSTOMER")
+                .requestMatchers("/api/v1/booking/update/booking/{bookingId}").hasAuthority("CUSTOMER")
+                .requestMatchers("/api/v1/booking/delete/booking/{bookingId}").hasAuthority("CUSTOMER")
+                .requestMatchers("/api/v1/customer/get").hasAuthority("CUSTOMER")
+                .requestMatchers("/api/v1/customer/update").hasAuthority("CUSTOMER")
+                .requestMatchers("/api/v1/customer/delete").hasAuthority("CUSTOMER")
                 .requestMatchers("/api/v1/customer/analyse").hasAuthority("CUSTOMER")
+                .requestMatchers("/api/v1/customer/cancel/booking/{bookingId}").hasAuthority("CUSTOMER")
+                .requestMatchers("/api/v1/review-hall/add/{hallId}").hasAuthority("CUSTOMER")
+                .requestMatchers("/api/v1/review-hall/update/{hallId}/{reviewHallId}").hasAuthority("CUSTOMER")
+                .requestMatchers("/api/v1/review-hall/delete/{hallId}/{reviewHallId}").hasAuthority("CUSTOMER")
+                .requestMatchers("/api/v1/review-sub-hall/add/{subHallId}").hasAuthority("CUSTOMER")
+                .requestMatchers("/api/v1/review-sub-hall/update/{subHallId}/{reviewSubHallId}").hasAuthority("CUSTOMER")
+                .requestMatchers("/api/v1/review-sub-hall/delete/{subHallId}/{reviewSubHallId}").hasAuthority("CUSTOMER")
+                .requestMatchers("/api/v1/payments/pay/for/{bookingId}").hasAuthority("CUSTOMER")
                 .requestMatchers("/api/v1/payments/card").hasAuthority("CUSTOMER")
+                .requestMatchers("/api/v1/payments/get/status/{statusId}").hasAuthority("CUSTOMER")
                 .requestMatchers("/api/v1/payments/download/invoice/{bookingId}").hasAuthority("CUSTOMER")
 
                 // Owner Authority
-                .requestMatchers("/api/v1/game/get").hasAuthority("OWNER")
-                .requestMatchers("/api/v1/booking/initiated/owner/{ownerId}/hall/{hallId}").hasAuthority("OWNER")
-                .requestMatchers("/api/v1/booking/Approved/owner/{ownerId}/hall/{hallId}").hasAuthority("OWNER")
-                .requestMatchers("/api/v1/booking/remind-unpaid/{ownerId}/{hallId}").hasAuthority("OWNER")
-                .requestMatchers("/api/v1/game/add/{OwnerId}/{hallId}/{subHallId}").hasAuthority("OWNER")
-                .requestMatchers("/api/v1/game/update/{OwnerId}/{hallId}/{subHallId}/{gameId}").hasAuthority("OWNER")
-                .requestMatchers("/api/v1/game/delete/{OwnerId}/{hallId}/{subHallId}/{gameId}").hasAuthority("OWNER")
-                .requestMatchers("/api/v1/hall/add/{ownerId}").hasAuthority("OWNER")
-                .requestMatchers("/api/v1/hall/update/**").hasAuthority("OWNER")
-                .requestMatchers("/api/v1/hall/delete/by/**").hasAuthority("OWNER")
-                .requestMatchers("/api/v1/owner/update/{ownerId}").hasAuthority("OWNER")
-                .requestMatchers("/api/v1/owner/delete/{ownerId}").hasAuthority("OWNER")
-                .requestMatchers("/api/v1/owner/feedback/to/{owner_id}/for/{hall_id}").hasAuthority("OWNER")
-                .requestMatchers("/api/v1/owner/feedback/to/{owner_id}/for/subhall/{sub_hall_id}").hasAuthority("OWNER")
-                .requestMatchers("/api/v1/owner/cancel/by/{ownerId}/booking/{bookingId}").hasAuthority("OWNER")
-                .requestMatchers("/api/v1/subhall/add/by/**").hasAuthority("OWNER")
-                .requestMatchers("/api/v1/subhall/update/by/**").hasAuthority("OWNER")
-                .requestMatchers("/api/v1/subhall/delete/{ownerId}/{subHallId}").hasAuthority("OWNER")
-                .requestMatchers("/api/v1/owner/get/{ownerId}").hasAuthority("OWNER")
-                .requestMatchers("/api/v1/subhall/get/{subHallId}").hasAnyAuthority("OWNER")    //todo:dto
-                .requestMatchers("/api/v1/subhall/hall/{hallId}/subhall/{subHallId}/budget/{pricePerHour}").hasAuthority("CUSTOMER")
+                .requestMatchers("/api/v1/hall/get/my").hasAuthority("OWNER")
+                .requestMatchers("/api/v1/booking/initiated/hall/{hallId}").hasAuthority("OWNER")
+                .requestMatchers("/api/v1/booking/approved/hall/{hallId}").hasAuthority("OWNER")
+                .requestMatchers("/api/v1/booking/remind-unpaid/{hallId}").hasAuthority("OWNER")
+                .requestMatchers("/api/v1/game/add/{hallId}/{subHallId}").hasAuthority("OWNER")
+                .requestMatchers("/api/v1/game/update/{hallId}/{subHallId}/{gameId}").hasAuthority("OWNER")
+                .requestMatchers("/api/v1/game/delete/{hallId}/{subHallId}/{gameId}").hasAuthority("OWNER")
+                .requestMatchers("/api/v1/hall/add").hasAuthority("OWNER")  //todo: get dto
+                .requestMatchers("/api/v1/hall/update/{hallId}").hasAuthority("OWNER")
+                .requestMatchers("/api/v1/hall/delete/{hallId}").hasAuthority("OWNER")
+                .requestMatchers("/api/v1/owner/update").hasAuthority("OWNER")
+                .requestMatchers("/api/v1/owner/delete").hasAuthority("OWNER")
+                .requestMatchers("/api/v1/owner/get").hasAuthority("OWNER") //todo: create a dto to hide payments
+                .requestMatchers("/api/v1/owner/feedback/hall/{hallId}").hasAuthority("OWNER")
+                .requestMatchers("/api/v1/owner/feedback/subhall/{subHallId}").hasAuthority("OWNER")
+                .requestMatchers("/api/v1/owner/cancel/booking/{bookingId}").hasAuthority("OWNER")
+                .requestMatchers("/api/v1/subhall/add/{hallId}").hasAuthority("OWNER")//todo: get dto
+                .requestMatchers("/api/v1/subhall/update/{subHallId}").hasAuthority("OWNER")
+                .requestMatchers("/api/v1/subhall/delete/{subHallId}").hasAuthority("OWNER")
+                .requestMatchers("/api/v1/subhall/get/{subHallId}").hasAuthority("OWNER")
+                .requestMatchers("/api/v1/subhall/hall/{hallId}/subhall/{subHallId}/budget/{pricePerHour}").hasAuthority("OWNER")
 
                 // Admin Authority
-                .requestMatchers("/api/v1/owner/get").hasAuthority("ADMIN")
-                .requestMatchers("/api/v1/customer/get").hasAuthority("ADMIN")
-                .requestMatchers("/api/v1/review-hall/hall/{hallId}/rating/").hasAuthority("ADMIN")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                .requestMatchers("/api/v1/owner/get-all").hasAuthority("ADMIN")
+                .requestMatchers("/api/v1/review-hall/get").hasAuthority("ADMIN")
+                .requestMatchers("/api/v1/review-hall/hall/{hallId}/rating").hasAuthority("ADMIN")
+                .requestMatchers("/api/v1/review-sub-hall/get").hasAuthority("ADMIN")
+                .requestMatchers("/api/v1/customer/getall").hasAuthority("ADMIN")
 
 
                 .anyRequest().authenticated()

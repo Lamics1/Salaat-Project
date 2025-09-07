@@ -2,10 +2,12 @@ package com.finalproject.tuwaiqfinal.Controller;
 
 import com.finalproject.tuwaiqfinal.Api.ApiResponse;
 import com.finalproject.tuwaiqfinal.DTOin.CustomerDTO;
+import com.finalproject.tuwaiqfinal.Model.User;
 import com.finalproject.tuwaiqfinal.Service.CustomerService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,15 +17,15 @@ public class CustomerController {
     private final CustomerService customerService;
 
 
-    @GetMapping("/get")
+    @GetMapping("/getall")
     public ResponseEntity<?> getAllCustomer() {
         return ResponseEntity.ok(customerService.getAllCustomers());
     }
 
 
-    @GetMapping("/get/{customer_id}")
-    public ResponseEntity<?> getCustomer(@PathVariable Integer customer_id) {
-        return ResponseEntity.status(200).body(customerService.getCustomer(customer_id));
+    @GetMapping("/get")
+    public ResponseEntity<?> getCustomer(@AuthenticationPrincipal User user) {
+        return ResponseEntity.status(200).body(customerService.getCustomer(user.getId()));
     }
 
     @PostMapping("/register")
@@ -32,16 +34,16 @@ public class CustomerController {
         return ResponseEntity.status(200).body(new ApiResponse("customer added successfully"));
     }
 
-    @PutMapping("/update/customer/{customer_id}")
-    public ResponseEntity<?> updateCustomer(@PathVariable Integer customer_id,
+    @PutMapping("/update")
+    public ResponseEntity<?> updateCustomer(@AuthenticationPrincipal User user,
                                             @Valid @RequestBody CustomerDTO customerDTO) {
-        customerService.updateCustomer(customer_id,customerDTO);
+        customerService.updateCustomer(user.getId(),customerDTO);
         return ResponseEntity.status(200).body(new ApiResponse("customer updated successfully"));
     }
 
-    @DeleteMapping("/delete/customer/{customer_id}")
-    public ResponseEntity<?> deleteCustomer(@PathVariable Integer customer_id) {
-        customerService.deleteCustomer(customer_id);
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteCustomer(@AuthenticationPrincipal User user) {
+        customerService.deleteCustomer(user.getId());
         return ResponseEntity.status(200).body(new ApiResponse("customer deleted successfully"));
     }
 
@@ -50,12 +52,12 @@ public class CustomerController {
         return ResponseEntity.status(200).body(customerService.analyseGame(image));
     }
 
-    @DeleteMapping("/cancel/by/{customerId}/booking/{bookingId}")
+    @DeleteMapping("/cancel/booking/{bookingId}")
     public ResponseEntity<?> cancelBooking(
-            @PathVariable Integer customerId,
+            @AuthenticationPrincipal User user,
             @PathVariable Integer bookingId
     ) {
-        customerService.customerCancelBooking(customerId, bookingId);
+        customerService.customerCancelBooking(user.getId(), bookingId);
         return ResponseEntity.status(200).body(new ApiResponse("Booking has been cancelled successfully"));
     }
 }

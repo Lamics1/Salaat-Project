@@ -24,7 +24,7 @@ public class SubhallService {
     private final SubHallRepository subHallRepository;
     private final OwnerRepository ownerRepository;
 
-    //todo: review subhall service
+
 
     public SubHall getSingleSubhall(Integer subHallId){
         return subHallRepository.findById(subHallId)

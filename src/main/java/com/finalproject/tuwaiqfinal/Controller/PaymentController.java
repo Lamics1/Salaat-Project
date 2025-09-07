@@ -5,6 +5,7 @@ import com.finalproject.tuwaiqfinal.DTOin.PaymentRequest;
 import com.finalproject.tuwaiqfinal.DTOout.MoyasarPaymentResponseDTO;
 import com.finalproject.tuwaiqfinal.DTOout.PaymentCreationResponseDTO;
 import com.finalproject.tuwaiqfinal.Model.Game;
+import com.finalproject.tuwaiqfinal.Model.User;
 import com.finalproject.tuwaiqfinal.Service.GameService;
 import com.finalproject.tuwaiqfinal.Service.PaymentService;
 import lombok.RequiredArgsConstructor;
@@ -12,12 +13,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/v1/payments")
 @RequiredArgsConstructor
-public class    PaymentController {
+public class PaymentController {
     private final PaymentService paymentService;
     private final GameService gameService;
 
@@ -34,11 +36,11 @@ public class    PaymentController {
     }
 
     // payment by user
-    @PostMapping("/pay/by/{customerId}/for/{bookingId}")
-    public ResponseEntity<PaymentCreationResponseDTO> customerPayment(@PathVariable Integer customerId,
+    @PostMapping("/pay/for/{bookingId}")
+    public ResponseEntity<PaymentCreationResponseDTO> customerPayment(@AuthenticationPrincipal User user,
                                                                       @PathVariable Integer bookingId,
                                                                       @RequestBody PaymentRequest paymentRequest) {
-        PaymentCreationResponseDTO result =  paymentService.customerPayment(customerId,bookingId,paymentRequest);
+        PaymentCreationResponseDTO result =  paymentService.customerPayment(user.getId(),bookingId,paymentRequest);
         return ResponseEntity.status(200).body(result);
     }
 

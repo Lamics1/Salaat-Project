@@ -24,6 +24,13 @@ public class HallService {
         return hallRepository.findAll();
     }
 
+    public List<Hall> getMyHalls(Integer ownerId){
+        Owner owner = ownerRepository.findById(ownerId)
+                .orElseThrow(()->new ApiException("owner not found"));
+
+        return hallRepository.findByOwner(owner);
+    }
+
     public Hall getSingleHall(Integer hallId){
         return hallRepository.findById(hallId)
                 .orElseThrow(()-> new ApiException("hall not found"));
