@@ -1,11 +1,14 @@
 package com.finalproject.tuwaiqfinal.Controller;
 import com.finalproject.tuwaiqfinal.Api.ApiResponse;
+import com.finalproject.tuwaiqfinal.DTOout.ReviewHallDTO;
 import com.finalproject.tuwaiqfinal.Model.ReviewHall;
 import com.finalproject.tuwaiqfinal.Service.ReviewHallService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -35,6 +38,11 @@ public class ReviewHallController {
     public ResponseEntity<?> deleteHall(@PathVariable Integer customerId,@PathVariable Integer hallId,@PathVariable Integer reviewHallId){
         reviewHallService.DeleteReviewHall(customerId,hallId,reviewHallId);
         return ResponseEntity.status(200).body(new ApiResponse("ReviewHall has been deleted"));
+    }
+    @GetMapping("/hall/{hallId}/rating/")
+    public ResponseEntity<?> getHallReviewsByMaxRating(@PathVariable Integer hallId) {
+        List<ReviewHallDTO> list = reviewHallService.getHallReviewsByMaxRating(hallId);
+        return ResponseEntity.status(200).body(list);
     }
 
 }

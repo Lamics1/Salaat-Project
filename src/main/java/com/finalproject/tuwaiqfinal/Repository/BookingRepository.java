@@ -25,6 +25,7 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
     List<Booking> findBookingsByCustomer_Id(Integer customerId);
 
+    boolean existsByCustomer_IdAndSubHall_Hall_IdAndStatusIgnoreCase(Integer customerId, Integer hallId, String status);
     @Query("""
 select b from Booking b
 where b.subHall.id = :subHall
