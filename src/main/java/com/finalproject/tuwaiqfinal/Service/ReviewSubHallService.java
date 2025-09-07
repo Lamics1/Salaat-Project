@@ -34,7 +34,7 @@ public class ReviewSubHallService {
             throw new ApiException("Sub Hall not found");
         }
 
-        Booking booking = bookingRepository.findBookingsByCustomerAndSubHall(customer, subHall);
+        Booking booking = bookingRepository.findBookingsByCustomerAndSubHallAndStatus(customer, subHall,"approved");
         if (booking == null) {
             throw new ApiException("customer does not have a booking");
         }
@@ -68,7 +68,7 @@ public class ReviewSubHallService {
             throw new ApiException("Sub Hall not found");
         }
 
-        Booking booking = bookingRepository.findBookingsByCustomerAndSubHall(customer, subHall);
+        Booking booking = bookingRepository.findBookingsByCustomerAndSubHallAndStatus(customer, subHall,"approved");
         if (booking == null) {
             throw new ApiException("customer does not have a booking");
         }
@@ -106,7 +106,7 @@ public class ReviewSubHallService {
             throw new ApiException("Sub Hall not found");
         }
 
-        Booking booking = bookingRepository.findBookingsByCustomerAndSubHall(customer, subHall);
+        Booking booking = bookingRepository.findBookingsByCustomerAndSubHallAndStatus(customer, subHall,"approved");
         if (booking == null) {
             throw new ApiException("customer does not have a booking");
         }

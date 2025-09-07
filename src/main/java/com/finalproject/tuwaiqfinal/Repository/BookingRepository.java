@@ -21,7 +21,7 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
     Booking findBookingsByCustomerId(Integer customerId);
 
-    Booking findBookingsByCustomerAndSubHall(Customer customer, SubHall subHall);
+    Booking findBookingsByCustomerAndSubHallAndStatus(Customer customer, SubHall subHall, String status);
 
     List<Booking> findBookingsByCustomer_Id(Integer customerId);
 

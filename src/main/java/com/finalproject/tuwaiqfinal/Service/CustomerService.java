@@ -3,9 +3,13 @@ package com.finalproject.tuwaiqfinal.Service;
 import com.finalproject.tuwaiqfinal.Api.ApiException;
 import com.finalproject.tuwaiqfinal.DTOin.CustomerDTO;
 import com.finalproject.tuwaiqfinal.DTOout.AnalyseGameDTO;
+import com.finalproject.tuwaiqfinal.Model.Booking;
 import com.finalproject.tuwaiqfinal.Model.Customer;
+import com.finalproject.tuwaiqfinal.Model.Game;
 import com.finalproject.tuwaiqfinal.Model.User;
+import com.finalproject.tuwaiqfinal.Repository.BookingRepository;
 import com.finalproject.tuwaiqfinal.Repository.CustomerRepository;
+import com.finalproject.tuwaiqfinal.Repository.GameRepository;
 import com.finalproject.tuwaiqfinal.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,6 +26,8 @@ public class CustomerService {
 //  services DI
     private final AiService aiService;
     private final WhatsAppService whatsAppService;
+    private final BookingRepository bookingRepository;
+    private final GameRepository gameRepository;
 
     /// 1- get customer by his id
     public Customer getCustomer(Integer customerId){
@@ -123,6 +129,38 @@ public class CustomerService {
 
     public AnalyseGameDTO analyseGame(byte[] gameImage){
         return aiService.analyzeImage(gameImage);
+    }
+
+     /*
+        1- for cancel booking, we have to delete the booking from the game also
+     */
+    // 6- allow customer to cancel their booking & delete booking
+    public void customerCancelBooking(Integer customerId,Integer bookingId) {
+
+        // check if user exist
+       Customer customer = customerRepository.findCustomerById(customerId);
+       if(customer == null) {
+           throw new ApiException("customer not found");
+       }
+
+       // check if booking exist
+        Booking booking = bookingRepository.findBookingsById(bookingId);
+       if(booking == null) {
+           throw new ApiException("booking not found");
+       }
+
+       // check if customer belong to this booking
+        if(booking.getCustomer() == null || !booking.getCustomer().getId().equals(customerId)) {
+            throw new ApiException("customer not belong to this booking");
+        }
+
+        if(booking.getStatus().equalsIgnoreCase("approved")) {
+            throw new ApiException("booking handled before");
+        }
+
+        // delete booking form game:
+        bookingRepository.delete(booking);
+
     }
 
 

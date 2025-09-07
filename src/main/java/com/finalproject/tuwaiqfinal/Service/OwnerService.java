@@ -3,18 +3,13 @@ package com.finalproject.tuwaiqfinal.Service;
 
 import com.finalproject.tuwaiqfinal.Api.ApiException;
 import com.finalproject.tuwaiqfinal.DTOin.OwnerDTO;
-import com.finalproject.tuwaiqfinal.Model.Hall;
-import com.finalproject.tuwaiqfinal.Model.Owner;
-import com.finalproject.tuwaiqfinal.Model.ReviewHall;
-import com.finalproject.tuwaiqfinal.Model.User;
-import com.finalproject.tuwaiqfinal.Repository.HallRepository;
-import com.finalproject.tuwaiqfinal.Repository.OwnerRepository;
-import com.finalproject.tuwaiqfinal.Repository.ReviewHallRepository;
-import com.finalproject.tuwaiqfinal.Repository.UserRepository;
+import com.finalproject.tuwaiqfinal.Model.*;
+import com.finalproject.tuwaiqfinal.Repository.*;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.awt.print.Book;
 import java.util.List;
 
 @Service
@@ -26,6 +21,9 @@ public class OwnerService {
     private final ReviewHallRepository reviewHallRepository;
     private final HallRepository hallRepository;
     private final AiService aiService;
+    private final BookingRepository bookingRepository;
+    private final SubHallRepository subHallRepository;
+    private final ReviewSubHallRepository reviewSubHallRepository;
 
     public List<Owner> getAllOwners(){
         return ownerRepository.findAll();
@@ -103,4 +101,55 @@ public class OwnerService {
         return aiService.hallFeedback(reviewHalls);
     }
 
+    // allow owner to cancel a booking
+    public void ownerCancelBooking(Integer ownerId, Integer bookingId) {
+
+        Owner owner = ownerRepository.findOwnerById(ownerId);
+        if(owner == null) {
+            throw new ApiException("owner not found");
+        }
+
+        Booking booking = bookingRepository.findBookingsById(bookingId);
+        if(booking == null) {
+            throw new ApiException("booking not found");
+        }
+
+        // check if booking's sub hall owned by owner
+        if(!booking.getSubHall().getHall().getOwner().getId().equals(owner.getId())) {
+            throw new ApiException("forbidden: this owner does not have premonition to delete booking with id:" +booking.getId());
+        }
+
+        // delete booking form game:
+        bookingRepository.delete(booking);
+    }
+
+
+    // ai feedback for sub hall
+    public String subHallFeedback(Integer ownerId,Integer subHallId) {
+
+        // check if owner exists
+        Owner owner = ownerRepository.findOwnerById(ownerId);
+        if(owner == null) {
+            throw new ApiException("owner not found");
+        }
+
+        // check if subHall exist
+        SubHall subHall = subHallRepository.findSubHallsById(subHallId);
+        if(subHall == null) {
+            throw new ApiException("sub hall not found");
+        }
+
+        // check if owner own this sub hall
+        if(subHall.getHall().getOwner().getId().equals(owner.getId())) {
+            throw new ApiException("forbidden: owner does not own this sub hall");
+        }
+
+        // grab all reviews of sub hall
+        List<ReviewSubHall> reviewSubHalls = reviewSubHallRepository.findAllBySubHall(subHall);
+
+        if(reviewSubHalls.isEmpty()) {
+            throw new ApiException("sorry, empty list reviews");
+        }
+        return aiService.subHallFeedback(reviewSubHalls);
+    }
 }
