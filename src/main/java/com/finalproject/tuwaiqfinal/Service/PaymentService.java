@@ -197,6 +197,9 @@ public class PaymentService {
             Booking booking = payment.getBooking();
             if(!message.equalsIgnoreCase("approved")){
                 booking.setStatus("cancelled"); // if not approved then cancelled
+
+                // release game from booking
+                bookingRepository.delete(booking);
                 bookingRepository.save(booking);
             }else{
                 booking.setStatus(message); // APPROVED

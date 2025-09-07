@@ -27,7 +27,7 @@ public class Game {
     private SubHall subHall;
 
     // change relation
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "game")
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "game")
     private Set<Booking> bookings;
 
     @NotEmpty(message = "Color cannot be empty")

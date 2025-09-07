@@ -21,10 +21,11 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
     Booking findBookingsByCustomerId(Integer customerId);
 
-    Booking findBookingsByCustomerAndSubHall(Customer customer, SubHall subHall);
+    Booking findBookingsByCustomerAndSubHallAndStatus(Customer customer, SubHall subHall, String status);
 
     List<Booking> findBookingsByCustomer_Id(Integer customerId);
 
+    boolean existsByCustomer_IdAndSubHall_Hall_IdAndStatusIgnoreCase(Integer customerId, Integer hallId, String status);
     @Query("""
 select b from Booking b
 where b.subHall.id = :subHall

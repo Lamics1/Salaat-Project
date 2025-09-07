@@ -10,6 +10,6 @@ import java.util.List;
 public interface ReviewHallRepository extends JpaRepository<ReviewHall, Integer> {
     ReviewHall findReviewHallById(Integer id);
     boolean existsByCustomerIdAndHallId(Integer customerId, Integer hallId);
-
+    List<ReviewHall> findByHall_IdAndRatingLessThanEqualOrderByRatingDescIdDesc(Integer hallId, Double rating);
     List<ReviewHall> findAllByHallId(Integer hallId);
 }
