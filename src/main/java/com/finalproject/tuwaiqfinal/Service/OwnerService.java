@@ -119,6 +119,15 @@ public class OwnerService {
             throw new ApiException("forbidden: this owner does not have premonition to delete booking with id:" +booking.getId());
         }
 
+        // Align with cancellation rules used elsewhere
+        if ("approved".equalsIgnoreCase(booking.getStatus())) {
+            throw new ApiException("booking approved, can't cancel this booking");
+        }
+        if ("cancelled".equalsIgnoreCase(booking.getStatus())) {
+            throw new ApiException("booking already cancelled");
+        }
+
+
         // delete booking form game:
         bookingRepository.delete(booking);
     }
