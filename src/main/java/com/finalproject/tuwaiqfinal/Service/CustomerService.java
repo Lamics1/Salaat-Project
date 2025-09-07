@@ -5,7 +5,6 @@ import com.finalproject.tuwaiqfinal.DTOin.CustomerDTO;
 import com.finalproject.tuwaiqfinal.DTOout.AnalyseGameDTO;
 import com.finalproject.tuwaiqfinal.Model.Booking;
 import com.finalproject.tuwaiqfinal.Model.Customer;
-import com.finalproject.tuwaiqfinal.Model.Game;
 import com.finalproject.tuwaiqfinal.Model.User;
 import com.finalproject.tuwaiqfinal.Repository.BookingRepository;
 import com.finalproject.tuwaiqfinal.Repository.CustomerRepository;
@@ -29,6 +28,12 @@ public class CustomerService {
     private final BookingRepository bookingRepository;
     private final GameRepository gameRepository;
 
+
+    public List<Customer> getAllCustomers(){
+        return customerRepository.findAll();
+    }
+
+
     /// 1- get customer by his id
     public Customer getCustomer(Integer customerId){
 
@@ -44,7 +49,7 @@ public class CustomerService {
 
 
     // 2- add customer:
-    public void addCustomer(CustomerDTO customerDTO){
+    public void registerCustomer(CustomerDTO customerDTO){
 
         /// 1- add values for user model
         User user  = new User();

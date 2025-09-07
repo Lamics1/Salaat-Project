@@ -1,6 +1,7 @@
 package com.finalproject.tuwaiqfinal.Model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,6 +39,7 @@ public class User implements UserDetails {
     private String email;
 
     @Column(nullable = false)
+    @Pattern(regexp = "^(CUSTOMER|OWNER|ADMIN)$",message = "role should be: (CUSTOMER|OWNER|ADMIN)")
     private String role;
 
     @CreationTimestamp
