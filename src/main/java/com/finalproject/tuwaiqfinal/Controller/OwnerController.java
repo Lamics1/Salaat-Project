@@ -49,4 +49,19 @@ public class OwnerController {
         String result = ownerService.reviewFeedback(owner_id,hall_id);
         return ResponseEntity.status(200).body(result);
     }
+
+    @GetMapping("/feedback/to/{owner_id}/for/subhall/{sub_hall_id}")
+    public ResponseEntity<?> subHallFeedback(@PathVariable Integer owner_id,
+                                             @PathVariable Integer sub_hall_id) {
+        String result = ownerService.subHallFeedback(owner_id,sub_hall_id);
+        return ResponseEntity.status(200).body(result);
+    }
+
+    @DeleteMapping("/cancel/by/{ownerId}/booking/{bookingId}")
+    public ResponseEntity<ApiResponse> cancelBookingByOwner(
+            @PathVariable Integer ownerId,
+            @PathVariable Integer bookingId) {
+        ownerService.ownerCancelBooking(ownerId, bookingId);
+        return ResponseEntity.ok(new ApiResponse("Booking has been cancelled successfully by owner."));
+    }
 }

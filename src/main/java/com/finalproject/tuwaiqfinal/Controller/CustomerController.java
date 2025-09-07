@@ -42,4 +42,13 @@ public class CustomerController {
     public ResponseEntity<?> analyseGame(@RequestBody byte[] image){
         return ResponseEntity.status(200).body(customerService.analyseGame(image));
     }
+
+    @DeleteMapping("/cancel/by/{customerId}/booking/{bookingId}")
+    public ResponseEntity<?> cancelBooking(
+            @PathVariable Integer customerId,
+            @PathVariable Integer bookingId
+    ) {
+        customerService.customerCancelBooking(customerId, bookingId);
+        return ResponseEntity.status(200).body(new ApiResponse("Booking has been cancelled successfully"));
+    }
 }

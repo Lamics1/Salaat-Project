@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.finalproject.tuwaiqfinal.Api.ApiException;
 import com.finalproject.tuwaiqfinal.DTOout.AnalyseGameDTO;
 import com.finalproject.tuwaiqfinal.Model.ReviewHall;
+import com.finalproject.tuwaiqfinal.Model.ReviewSubHall;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.openai.OpenAiChatOptions;
@@ -119,6 +120,46 @@ public class AiService {
                 3. ذكر أبرز النقاط الإيجابية التي يكررها العملاء.
                 4. استخراج التعليقات السلبية أو الملاحظات المتكررة.
                 5. تقديم نصائح عملية موجهة لصاحب القاعة بناءً على هذه الملاحظات السلبية (كيف يمكنه تحسين القاعة أو الخدمة).
+                
+                
+                """.formatted(allComment);
+
+        try {
+            return chatClient
+                    .prompt(prompt)
+                    .call()
+                    .content();
+        } catch (Exception e) {
+            return "Unable to analyze reviews at this time. Please try again later.";
+        }
+    }
+
+    public String subHallFeedback(List<ReviewSubHall> reviews) {
+
+        // validate from reviews list
+        if(reviews.isEmpty()) {
+            throw new ApiException("No reviews available for analysis");
+        }
+
+        // extract the comment only using stream()
+        String allComment = reviews.stream()
+                .map(ReviewSubHall::getComment)
+                .filter(comment -> comment != null && !comment.trim().isEmpty())
+                .collect(Collectors.joining("-"));
+
+        // set up the prompt
+        String prompt = """
+                قم بتحليل التعليقات التالية التي كتبها العملاء عن القاعه الداخليه اللتي تتضمن نوع من انوع الألعاب:
+                الجواب يكون نص عادي بدون أي علامات Markdown أو نجوم
+                ايضا يكون الجواب مرتب ومرقم
+                %s
+                
+                المطلوب منك:
+                1. إعطاء ملخص عام عن هذه التعليقات.
+                2. تحديد الانطباع العام (إيجابي / سلبي / محايد).
+                3. ذكر أبرز النقاط الإيجابية التي يكررها العملاء.
+                4. استخراج التعليقات السلبية أو الملاحظات المتكررة.
+                5. تقديم نصائح عملية موجهة لصاحب القاعة بناءً على هذه الملاحظات السلبية (كيف يمكنه تحسين اللعبه أو الخدم .
                 
                 
                 """.formatted(allComment);

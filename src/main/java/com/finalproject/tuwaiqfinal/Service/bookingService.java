@@ -201,8 +201,6 @@ public class bookingService {
         /// 4- check from booking status (no cancel after approve OR already cancelled )
         if(booking.getStatus().equals("approved"))
             throw new ApiException("booking approved, can't cancel this booking");
-        if(booking.getStatus().equals("cancelled"))
-            throw new ApiException("booking already cancelled");
 
         /// 5- release game availability for this booking
         Game game = booking.getGame();

@@ -58,7 +58,7 @@ public class BookingController {
         return ResponseEntity.status(200).body(bookings);
     }
 
-    @GetMapping("/remind-unpaid/{ownerId}/{hallId}")
+    @PostMapping("/remind-unpaid/{ownerId}/{hallId}")
     public ResponseEntity<?> remindUnpaid(@PathVariable Integer ownerId, @PathVariable Integer hallId) {
         bookingService.remindUnpaidByHall(ownerId, hallId);
         return ResponseEntity.status(200).body("message is send successfully");
