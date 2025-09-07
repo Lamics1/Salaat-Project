@@ -24,15 +24,15 @@ public class SubHallController {
         return ResponseEntity.ok(subhallService.getSingleSubhall(subHallId));
     }
 
-    @PostMapping("/add/{hallId}")
-    public ResponseEntity<?> addSubHall(@PathVariable Integer hallId, @RequestBody @Valid SubHall subHall){
-        subhallService.addSubHall(hallId, subHall);
+    @PostMapping("/add/by/{ownerId}/{hallId}")
+    public ResponseEntity<?> addSubHall(@PathVariable Integer ownerId,@PathVariable Integer hallId, @RequestBody @Valid SubHall subHall){
+        subhallService.addSubHall(ownerId,hallId, subHall);
         return ResponseEntity.ok(new ApiResponse("SubHall has been added"));
     }
 
-    @PutMapping("/update/{subHallId}")
-    public ResponseEntity<?> updateSubHall(@PathVariable Integer subHallId, @RequestBody @Valid SubHall subHall){
-        subhallService.updateSubHall(subHallId, subHall);
+    @PutMapping("/update/by/{ownerId}/{subHallId}")
+    public ResponseEntity<?> updateSubHall(@PathVariable Integer ownerId,@PathVariable Integer subHallId, @RequestBody @Valid SubHall subHall){
+        subhallService.updateSubHall(ownerId,subHallId, subHall);
         return ResponseEntity.ok(new ApiResponse("SubHall has been updated"));
     }
 

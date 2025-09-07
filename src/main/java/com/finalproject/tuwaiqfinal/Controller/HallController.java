@@ -37,9 +37,9 @@ public class HallController {
         return ResponseEntity.ok(new ApiResponse("Hall has been updated"));
     }
 
-    @DeleteMapping("/delete/{hallId}")
-    public ResponseEntity<?> deleteHall(@PathVariable Integer hallId){
-        hallService.deleteHall(hallId);
+    @DeleteMapping("/delete/by/{ownerId}/hall/{hallId}")
+    public ResponseEntity<?> deleteHall(@PathVariable Integer ownerId,@PathVariable Integer hallId){
+        hallService.deleteHall(ownerId,hallId);
         return ResponseEntity.ok(new ApiResponse("Hall has been deleted"));
     }
 
