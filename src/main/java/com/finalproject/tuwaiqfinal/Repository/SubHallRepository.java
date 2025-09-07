@@ -11,5 +11,5 @@ import java.util.List;
 public interface SubHallRepository extends JpaRepository<SubHall, Integer> {
     SubHall findSubHallsById(Integer id);
     List<SubHall> getSubHallByHall(Hall hall);
-
+    List<SubHall> findByHall_IdAndPricePerHourLessThanEqualOrderByPricePerHourAscIdAsc(Integer hallId, Integer pricePerHour);
 }

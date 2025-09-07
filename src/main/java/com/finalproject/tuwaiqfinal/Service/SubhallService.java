@@ -1,11 +1,11 @@
 package com.finalproject.tuwaiqfinal.Service;
 
 import com.finalproject.tuwaiqfinal.Api.ApiException;
-import com.finalproject.tuwaiqfinal.Model.Booking;
+import com.finalproject.tuwaiqfinal.DTOout.ReviewHallDTO;
+import com.finalproject.tuwaiqfinal.DTOout.ReviewSubHallDTO;
 import com.finalproject.tuwaiqfinal.Model.Hall;
 import com.finalproject.tuwaiqfinal.Model.Owner;
 import com.finalproject.tuwaiqfinal.Model.SubHall;
-import com.finalproject.tuwaiqfinal.Repository.BookingRepository;
 import com.finalproject.tuwaiqfinal.Repository.HallRepository;
 import com.finalproject.tuwaiqfinal.Repository.OwnerRepository;
 import com.finalproject.tuwaiqfinal.Repository.SubHallRepository;
@@ -74,5 +74,34 @@ public class SubhallService {
 
         subHall.setHall(null);
         subHallRepository.delete(subHall);
+    }
+
+    public List<ReviewSubHallDTO> getSubHallsWithinBudget(Integer hallId, Integer subHallId, Integer pricePerHour) {
+
+
+        Hall hall = hallRepository.findById(hallId)
+                .orElseThrow(() -> new ApiException("hall not found"));
+
+
+        SubHall subHall = subHallRepository.findSubHallsById(subHallId);
+        if (subHall == null) {
+            throw new ApiException("sub hall not found");
+        }
+        if (subHall.getHall() == null || !subHall.getHall().getId().equals(hall.getId()))
+            throw new ApiException("sub hall does not belong to this hall");
+
+
+        if (pricePerHour == null || pricePerHour < 0)
+            throw new ApiException("invalid price");
+
+        List<SubHall> rows = subHallRepository.findByHall_IdAndPricePerHourLessThanEqualOrderByPricePerHourAscIdAsc(hallId, pricePerHour);
+
+        List<ReviewSubHallDTO> out = new java.util.ArrayList<>();
+        for (SubHall s : rows) {
+            out.add(new ReviewSubHallDTO(s.getId(), s.getName(), s.getPricePerHour(), s.getDescription()));
+        }
+
+        return out;
+
     }
 }
