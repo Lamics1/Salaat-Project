@@ -2,11 +2,13 @@ package com.finalproject.tuwaiqfinal.Controller;
 
 import com.finalproject.tuwaiqfinal.Api.ApiResponse;
 import com.finalproject.tuwaiqfinal.DTOin.OwnerDTO;
+import com.finalproject.tuwaiqfinal.Model.User;
 import com.finalproject.tuwaiqfinal.Service.HallService;
 import com.finalproject.tuwaiqfinal.Service.OwnerService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,14 +17,14 @@ import org.springframework.web.bind.annotation.*;
 public class OwnerController {
     private final OwnerService ownerService;
 
-    @GetMapping("/get")
+    @GetMapping("/get-all")
     public ResponseEntity<?> getAllOwners(){
         return ResponseEntity.ok(ownerService.getAllOwners());
     }
 
-    @GetMapping("/get/{ownerId}")
-    public ResponseEntity<?> getSingleOwner(@PathVariable Integer ownerId){
-        return ResponseEntity.ok(ownerService.getSingleOwner(ownerId));
+    @GetMapping("/get")
+    public ResponseEntity<?> getSingleOwner(@AuthenticationPrincipal User user){
+        return ResponseEntity.ok(ownerService.getSingleOwner(user.getId()));
     }
 
     @PostMapping("/register")
@@ -31,37 +33,37 @@ public class OwnerController {
         return ResponseEntity.ok(new ApiResponse("owner have been registered"));
     }
 
-    @PutMapping("/update/{ownerId}")
-    public ResponseEntity<?> updateOwner(@PathVariable Integer ownerId, @RequestBody @Valid OwnerDTO ownerDTO){
-        ownerService.updateOwner(ownerId,ownerDTO);
+    @PutMapping("/update")
+    public ResponseEntity<?> updateOwner(@AuthenticationPrincipal User user, @RequestBody @Valid OwnerDTO ownerDTO){
+        ownerService.updateOwner(user.getId(),ownerDTO);
         return ResponseEntity.ok(new ApiResponse("owner have been updated"));
     }
 
-    @DeleteMapping("/delete/{ownerId}")
-    public ResponseEntity<?> deleteOwner(@PathVariable Integer ownerId){
-        ownerService.deleteOwner(ownerId);
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteOwner(@AuthenticationPrincipal User user){
+        ownerService.deleteOwner(user.getId());
         return ResponseEntity.ok(new ApiResponse("owner have been deleted"));
     }
 
-    @GetMapping("/feedback/to/{owner_id}/for/{hall_id}")
-    public ResponseEntity<?> reviewFeedback(@PathVariable Integer owner_id,
+    @GetMapping("/feedback/{hall_id}")
+    public ResponseEntity<?> reviewFeedback(@AuthenticationPrincipal User user,
                                             @PathVariable Integer hall_id) {
-        String result = ownerService.reviewFeedback(owner_id,hall_id);
+        String result = ownerService.reviewFeedback(user.getId(),hall_id);
         return ResponseEntity.status(200).body(result);
     }
 
-    @GetMapping("/feedback/to/{owner_id}/for/subhall/{sub_hall_id}")
-    public ResponseEntity<?> subHallFeedback(@PathVariable Integer owner_id,
+    @GetMapping("/feedback/subhall/{sub_hall_id}")
+    public ResponseEntity<?> subHallFeedback(@AuthenticationPrincipal User user,
                                              @PathVariable Integer sub_hall_id) {
-        String result = ownerService.subHallFeedback(owner_id,sub_hall_id);
+        String result = ownerService.subHallFeedback(user.getId(),sub_hall_id);
         return ResponseEntity.status(200).body(result);
     }
 
-    @DeleteMapping("/cancel/by/{ownerId}/booking/{bookingId}")
+    @DeleteMapping("/cancel/booking/{bookingId}")
     public ResponseEntity<ApiResponse> cancelBookingByOwner(
-            @PathVariable Integer ownerId,
+            @AuthenticationPrincipal User user,
             @PathVariable Integer bookingId) {
-        ownerService.ownerCancelBooking(ownerId, bookingId);
+        ownerService.ownerCancelBooking(user.getId(), bookingId);
         return ResponseEntity.ok(new ApiResponse("Booking has been cancelled successfully by owner."));
     }
 }

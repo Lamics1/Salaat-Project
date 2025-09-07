@@ -24,7 +24,7 @@ public class Customer {
     @Column(nullable = false, unique = true)
     private String phone_number;
 
-    // todo: lat, lon
+
     @Column(nullable = false)
     private String location;
 

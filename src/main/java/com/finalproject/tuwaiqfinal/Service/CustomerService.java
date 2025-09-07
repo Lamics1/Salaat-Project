@@ -5,13 +5,13 @@ import com.finalproject.tuwaiqfinal.DTOin.CustomerDTO;
 import com.finalproject.tuwaiqfinal.DTOout.AnalyseGameDTO;
 import com.finalproject.tuwaiqfinal.Model.Booking;
 import com.finalproject.tuwaiqfinal.Model.Customer;
-import com.finalproject.tuwaiqfinal.Model.Game;
 import com.finalproject.tuwaiqfinal.Model.User;
 import com.finalproject.tuwaiqfinal.Repository.BookingRepository;
 import com.finalproject.tuwaiqfinal.Repository.CustomerRepository;
 import com.finalproject.tuwaiqfinal.Repository.GameRepository;
 import com.finalproject.tuwaiqfinal.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,6 +29,14 @@ public class CustomerService {
     private final BookingRepository bookingRepository;
     private final GameRepository gameRepository;
 
+    private final BCryptPasswordEncoder bCryptPasswordEncoder= new BCryptPasswordEncoder();
+
+
+    public List<Customer> getAllCustomers(){
+        return customerRepository.findAll();
+    }
+
+
     /// 1- get customer by his id
     public Customer getCustomer(Integer customerId){
 
@@ -44,13 +52,13 @@ public class CustomerService {
 
 
     // 2- add customer:
-    public void addCustomer(CustomerDTO customerDTO){
+    public void registerCustomer(CustomerDTO customerDTO){
 
         /// 1- add values for user model
         User user  = new User();
 
         user.setUsername(customerDTO.getUsername());
-        user.setPassword(customerDTO.getPassword());
+        user.setPassword(bCryptPasswordEncoder.encode(customerDTO.getPassword()));
         user.setEmail(customerDTO.getEmail());
         user.setRole("CUSTOMER");
 
@@ -94,7 +102,7 @@ public class CustomerService {
 
         /// 3- Update user fields
         user.setUsername(dto.getUsername());
-        user.setPassword(dto.getPassword()); // Consider hashing this
+        user.setPassword(bCryptPasswordEncoder.encode(dto.getPassword()));
         user.setEmail(dto.getEmail());
 
         /// 4- Update customer fields

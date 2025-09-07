@@ -1,10 +1,12 @@
 package com.finalproject.tuwaiqfinal.Controller;
 import com.finalproject.tuwaiqfinal.Api.ApiResponse;
 import com.finalproject.tuwaiqfinal.Model.Game;
+import com.finalproject.tuwaiqfinal.Model.User;
 import com.finalproject.tuwaiqfinal.Service.GameService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,21 +20,21 @@ public class GameController {
         return ResponseEntity.status(200).body(gameService.getAllGame());
     }
 
-    @PostMapping("/add/{OwnerId}/{hallId}/{subHallId}")
-    public ResponseEntity<?> AddGame(@PathVariable Integer OwnerId, @PathVariable Integer hallId,@PathVariable Integer subHallId, @RequestBody @Valid Game game){
-        gameService.AddGame(OwnerId, hallId, subHallId,game);
+    @PostMapping("/add/{hallId}/{subHallId}")
+    public ResponseEntity<?> AddGame(@AuthenticationPrincipal User user, @PathVariable Integer hallId,@PathVariable Integer subHallId, @RequestBody @Valid Game game){
+        gameService.AddGame(user.getId(), hallId, subHallId,game);
         return ResponseEntity.status(200).body(new ApiResponse("Game has been added"));
     }
 
-    @PutMapping("/update/{OwnerId}/{hallId}/{subHallId}/{gameId}")
-    public ResponseEntity<?> UpdateGame(@PathVariable Integer OwnerId, @PathVariable Integer hallId,@PathVariable Integer subHallId,@PathVariable Integer gameId,@RequestBody @Valid Game game){
-        gameService.UpdateGame(OwnerId, hallId, subHallId,gameId,game);
+    @PutMapping("/update/{hallId}/{subHallId}/{gameId}")
+    public ResponseEntity<?> UpdateGame(@AuthenticationPrincipal User user, @PathVariable Integer hallId,@PathVariable Integer subHallId,@PathVariable Integer gameId,@RequestBody @Valid Game game){
+        gameService.UpdateGame(user.getId(), hallId, subHallId,gameId,game);
         return ResponseEntity.status(200).body(new ApiResponse("Game has been updated"));
     }
 
-    @DeleteMapping("/delete/{OwnerId}/{hallId}/{subHallId}/{gameId}")
-    public ResponseEntity<?> DeleteGame(@PathVariable Integer OwnerId,@PathVariable Integer hallId,@PathVariable Integer subHallId,@PathVariable Integer gameId){
-        gameService.DeleteGame(OwnerId,hallId,subHallId,gameId);
+    @DeleteMapping("/delete/{hallId}/{subHallId}/{gameId}")
+    public ResponseEntity<?> DeleteGame(@AuthenticationPrincipal User user,@PathVariable Integer hallId,@PathVariable Integer subHallId,@PathVariable Integer gameId){
+        gameService.DeleteGame(user.getId(),hallId,subHallId,gameId);
         return ResponseEntity.status(200).body(new ApiResponse("Game has been deleted"));
     }
 
