@@ -140,7 +140,7 @@ public class OwnerService {
         }
 
         // check if owner own this sub hall
-        if(subHall.getHall().getOwner().getId().equals(owner.getId())) {
+        if(!subHall.getHall().getOwner().getId().equals(owner.getId())) {
             throw new ApiException("forbidden: owner does not own this sub hall");
         }
 
