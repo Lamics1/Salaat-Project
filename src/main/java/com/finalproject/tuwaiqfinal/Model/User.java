@@ -58,9 +58,11 @@ public class User implements UserDetails {
     @PrimaryKeyJoinColumn
     private Owner owner;
 
+    private LocalDateTime lastLogin;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority(role));
+        return Collections.singleton(new SimpleGrantedAuthority(this.role));
     }
 
     @Override
