@@ -25,7 +25,7 @@ public class bookingService {
     private final MailService mailService;
     private final HallRepository hallRepository;
     private final WhatsAppService whatsAppService;
-    // 1- get all booking by one customer:
+    // 1- get all booking by one customer:extra
     public List<Booking> getBookingByCustomer(Integer customerId) {
 
         /// 1- check if customer exist:
@@ -36,7 +36,7 @@ public class bookingService {
         return bookingRepository.findBookingsByCustomer_Id(customer.getId());
     }
 
-    // 2- add booking by user to game at some sub hall:
+    // 2- add booking by user to game at some sub hall:extra
     public void addBooking(Integer customerId,
                            Integer subHallId,
                            BookingDTO bookingDTO){
@@ -100,7 +100,6 @@ public class bookingService {
         booking.setMembers(bookingDTO.getMembers());
         booking.setDuration_minutes(bookingDTO.getDuration_minutes());
         booking.setTotalPrice(totalPrice);
-        booking.setIsSplit(bookingDTO.getIsSplit());
         booking.setStartAt(bookingDTO.getStartAt());
         booking.setEndAt(endOfBooking);
         booking.setGame(game);
@@ -174,7 +173,6 @@ public class bookingService {
         oldBooking.setMembers(bookingDTO.getMembers());
         oldBooking.setDuration_minutes(bookingDTO.getDuration_minutes());
         oldBooking.setTotalPrice(newTotalPrice);
-        oldBooking.setIsSplit(bookingDTO.getIsSplit());
         oldBooking.setStartAt(bookingDTO.getStartAt());
         oldBooking.setEndAt(newEndTime);
 
@@ -313,7 +311,7 @@ public class bookingService {
     }
 
 
-    @Scheduled(cron = "0 */5 * * * *")    //for performance i set cron job for every hour
+    @Scheduled(cron = "0 * * * * *")//for performance i set cron job for every hour
     public void updateBookingStatusBasedOnEndDate() {
         List<Booking> bookings = bookingRepository.findAll();
         LocalDateTime now = LocalDateTime.now();
@@ -322,6 +320,9 @@ public class bookingService {
             if (booking.getEndAt() != null && booking.getEndAt().isBefore(now)) {
                 if (!"completed".equalsIgnoreCase(booking.getStatus()) && !"cancelled".equalsIgnoreCase(booking.getStatus())) {
                     booking.setStatus("completed");
+                    Game game = booking.getGame();
+                    game.setIsAvailable(true);
+                    gameRepository.save(game);
                     bookingRepository.save(booking);
                     log.info("Booking {} status updated to completed.", booking.getId());
                 }

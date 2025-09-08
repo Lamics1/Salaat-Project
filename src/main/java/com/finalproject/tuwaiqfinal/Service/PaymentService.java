@@ -7,6 +7,7 @@ import com.finalproject.tuwaiqfinal.Api.ApiException;
 import com.finalproject.tuwaiqfinal.DTOin.PaymentRequest;
 import com.finalproject.tuwaiqfinal.DTOout.MoyasarPaymentResponseDTO;
 import com.finalproject.tuwaiqfinal.DTOout.PaymentCreationResponseDTO;
+import com.finalproject.tuwaiqfinal.DTOout.PaymentDTO;
 import com.finalproject.tuwaiqfinal.Model.Booking;
 import com.finalproject.tuwaiqfinal.Model.Customer;
 import com.finalproject.tuwaiqfinal.Model.Game;
@@ -24,6 +25,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -53,7 +56,7 @@ public class PaymentService {
     private final S3Service s3Service;
     private final MailService mailService;
 
-    // 1- create method for Payment process:
+    // create method for Payment process:
     public MoyasarPaymentResponseDTO processPayment(PaymentRequest paymentRequest) {
 
 
@@ -96,7 +99,24 @@ public class PaymentService {
 
 
     // 1- get payment status
-    public String getPaymentStatus(String paymentId){
+    public String getPaymentStatus(Integer customerId,String paymentId){
+
+        // check if customer exist
+        Customer customer = customerRepository.findCustomerById(customerId);
+        if(customer == null) {
+            throw new ApiException("customer not found");
+        }
+
+        // check if customer belong to this payment
+        Payment payment = paymentRepository.getPaymentByMoyasarPaymentId(paymentId);
+        if(payment == null) {
+            throw new ApiException("payment not found");
+        }
+
+        if(!payment.getCustomer().getId().equals(customer.getId())) {
+            throw new ApiException("payment does not belong to this user");
+        }
+
         // Prepare headers with authentication
         HttpHeaders headers = new HttpHeaders();
         headers.setBasicAuth(apiKey, ""); // Basic Auth (API Key as username, blank password)
@@ -249,7 +269,7 @@ public class PaymentService {
         }
         return transactionUrl;
     }
-
+    // -4
     public byte[] downloadInvoice(Integer bookingId){
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(()->new ApiException("booking not found"));
@@ -259,6 +279,62 @@ public class PaymentService {
         return s3Service.downloadBytes(moyasarPaymentId);
     }
 
+
+    // 5- get all payment by one customer:
+    public List<PaymentDTO> getAllPaymentByCustomer(Integer customerId) {
+
+        // check if customer exist
+        Customer customer = customerRepository.findCustomerById(customerId);
+        if(customer == null) {
+            throw new ApiException("customer not found");
+        }
+
+        //return payments
+        List<Payment> payments = paymentRepository.findAllByCustomerId(customerId);
+
+        List<PaymentDTO> paymentDTOs = payments.stream()
+                .map(payment -> {
+                    PaymentDTO dto = new PaymentDTO();
+                    dto.setId(payment.getId());
+                    dto.setAmount(payment.getAmount());
+                    dto.setCurrency(payment.getCurrency());
+                    dto.setStatus(payment.getStatus());
+                    dto.setPaid_at(payment.getPaid_at());
+                    dto.setCreated_at(payment.getCreated_at());
+                    return dto;
+                })
+                .collect(Collectors.toList());
+
+        return paymentDTOs;
+    }
+
+
+    // 6- get payment by specific status
+    public List<PaymentDTO> getAllPaymentByCustomerAndStatus(Integer customerId, String status) {
+
+        // check if customer exist
+        Customer customer = customerRepository.findCustomerById(customerId);
+        if (customer == null) {
+            throw new ApiException("customer not found");
+        }
+
+        // get all payments by customer and status
+        List<Payment> payments = paymentRepository.findAllByCustomerIdAndStatus(customerId, status);
+
+        // map to DTO
+        return payments.stream()
+                .map(payment -> {
+                    PaymentDTO dto = new PaymentDTO();
+                    dto.setId(payment.getId());
+                    dto.setAmount(payment.getAmount());
+                    dto.setCurrency(payment.getCurrency());
+                    dto.setStatus(payment.getStatus());
+                    dto.setPaid_at(payment.getPaid_at());
+                    dto.setCreated_at(payment.getCreated_at());
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
 
 
 

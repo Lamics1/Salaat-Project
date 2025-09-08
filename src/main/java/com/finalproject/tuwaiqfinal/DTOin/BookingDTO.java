@@ -21,7 +21,7 @@ public class BookingDTO {
     private Integer members;
 
     @NotNull(message = "Duration cannot be null")
-    @Min(value = 30, message = "Minimum duration is 30 minutes")
+    @Min(value = 1, message = "Minimum duration is 30 minutes")
     private Integer duration_minutes;
 
     @NotNull(message = "isSplit cannot be null")
