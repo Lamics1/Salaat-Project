@@ -40,7 +40,7 @@ public class Hall {
 
     private String imageURL;
 
-    @NotNull(message = "Status cannot be null")
+    @NotNull(message = "availability cannot be null")
     @Column(nullable = false)
     private Boolean isAvailable;
 

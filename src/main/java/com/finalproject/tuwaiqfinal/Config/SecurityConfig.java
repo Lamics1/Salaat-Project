@@ -69,10 +69,12 @@ public class SecurityConfig {
                 .requestMatchers("/api/v1/review-sub-hall/delete/{subHallId}/{reviewSubHallId}").hasAuthority("CUSTOMER")
                 .requestMatchers("/api/v1/payments/pay/for/{bookingId}").hasAuthority("CUSTOMER")
                 .requestMatchers("/api/v1/payments/card").hasAuthority("CUSTOMER")
-                .requestMatchers("/api/v1/payments/get/status/{statusId}").hasAuthority("CUSTOMER")
+                .requestMatchers("/api/v1/payments/get/status/{paymentId}").hasAuthority("CUSTOMER")
                 .requestMatchers("/api/v1/payments/download/invoice/{bookingId}").hasAuthority("CUSTOMER")
                 .requestMatchers("/api/v1/review-hall/add/asset/**").hasAuthority("CUSTOMER")
                 .requestMatchers("/api/v1/review-sub-hall/add/asset/**").hasAuthority("CUSTOMER")
+                .requestMatchers("/api/v1/payments/get/all").hasAuthority("CUSTOMER")
+                .requestMatchers("/api/v1/payments/get/status/filter/{status}").hasAuthority("CUSTOMER")
 
                 // Owner Authority
                 .requestMatchers("/api/v1/hall/get/my").hasAuthority("OWNER")
