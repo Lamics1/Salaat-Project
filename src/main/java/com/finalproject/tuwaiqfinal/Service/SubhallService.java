@@ -11,10 +11,16 @@ import com.finalproject.tuwaiqfinal.Repository.OwnerRepository;
 import com.finalproject.tuwaiqfinal.Repository.SubHallRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,6 +31,8 @@ public class SubhallService {
     private final HallRepository hallRepository;
     private final SubHallRepository subHallRepository;
     private final OwnerRepository ownerRepository;
+
+    private final S3Service s3Service;
 
 
 
@@ -158,5 +166,61 @@ public class SubhallService {
         }
 
         return out;
+    }
+
+
+    public void addAsset(Integer subHallId, Integer ownerId, MultipartFile image) throws IOException {
+        SubHall subHall = subHallRepository.findById(subHallId)
+                .orElseThrow(()-> new ApiException("subBall not found"));
+
+        Owner owner = ownerRepository.findById(ownerId)
+                .orElseThrow(()->new ApiException("owner not found"));
+
+        if (!subHall.getHall().getOwner().equals(owner))
+            throw new ApiException("permission denied");
+
+        if (image.isEmpty())
+            throw new ApiException("Cannot upload an empty file");
+
+        String extension = FilenameUtils.getExtension(image.getOriginalFilename());
+
+        if (!"png".equals(extension) && !"jpg".equals(extension) && !"jpeg".equals(extension))
+            throw new ApiException("Only PNG, JPG, and JPEG files are allowed");
+
+        String s3Key = "halls/"+subHall.getHall().getId()+"/subhall" + subHall.getId() + "/" + UUID.randomUUID().toString() + "." + extension;
+        subHall.setImageURL(s3Service.uploadFile(s3Key,image));
+        subHallRepository.save(subHall);
+    }
+
+    public AssetDTO getAsset(Integer subHallId, Integer ownerId){
+        SubHall subHall = subHallRepository.findById(subHallId)
+                .orElseThrow(()->new ApiException("Sub hall not found"));
+
+        Owner owner = ownerRepository.findById(ownerId)
+                .orElseThrow(()-> new ApiException("owner not found"));
+
+        if (!subHall.getHall().getOwner().equals(owner))
+            throw new ApiException("permission denied");
+
+        if (subHall.getImageURL() == null) {
+            throw new ApiException("Sub Hall has no image");
+        }
+
+        try {
+            URL url = new URL(subHall.getImageURL());
+            String key = url.getPath().substring(1);
+            byte[] data = s3Service.downloadBytes(key);
+
+            String contentType = "application/octet-stream"; // Default
+            if (key.toLowerCase().endsWith(".png")) {
+                contentType = "image/png";
+            } else if (key.toLowerCase().endsWith(".jpg") || key.toLowerCase().endsWith(".jpeg")) {
+                contentType = "image/jpeg";
+            }
+
+            return new AssetDTO(data, contentType);
+        } catch (MalformedURLException e) {
+            throw new ApiException("Invalid image URL: " + e.getMessage());
+        }
     }
 }

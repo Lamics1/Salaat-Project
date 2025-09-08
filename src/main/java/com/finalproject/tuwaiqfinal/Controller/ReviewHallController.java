@@ -12,6 +12,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import com.finalproject.tuwaiqfinal.DTOout.AssetDTO;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/v1/review-hall")
@@ -45,6 +53,23 @@ public class ReviewHallController {
     public ResponseEntity<?> getHallReviewsByMaxRating(@PathVariable Integer hallId) {
         List<ReviewHallDTO> list = reviewHallService.getHallReviewsByMaxRating(hallId);
         return ResponseEntity.status(200).body(list);
+    }
+
+    @PutMapping("/add/asset/{reviewId}")
+    public ResponseEntity<?> addAsset(@AuthenticationPrincipal User user, @PathVariable Integer reviewId, @RequestParam("file") MultipartFile file) throws IOException {
+        reviewHallService.addAsset(reviewId, user.getId(), file);
+        return ResponseEntity.ok(new ApiResponse("asset added"));
+    }
+
+    @GetMapping("/get/asset/{reviewId}")
+    public ResponseEntity<byte[]> getAsset(@PathVariable Integer reviewId) {
+        AssetDTO asset = reviewHallService.getAsset(reviewId);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType(asset.getContentType()));
+        headers.setContentLength(asset.getData().length);
+
+        return new ResponseEntity<>(asset.getData(), headers, HttpStatus.OK);
     }
 
 }

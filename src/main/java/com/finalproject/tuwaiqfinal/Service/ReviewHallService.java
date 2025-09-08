@@ -1,21 +1,25 @@
 package com.finalproject.tuwaiqfinal.Service;
 
 import com.finalproject.tuwaiqfinal.Api.ApiException;
+import com.finalproject.tuwaiqfinal.DTOout.AssetDTO;
 import com.finalproject.tuwaiqfinal.DTOout.ReviewHallDTO;
-import com.finalproject.tuwaiqfinal.Model.Booking;
-import com.finalproject.tuwaiqfinal.Model.Customer;
-import com.finalproject.tuwaiqfinal.Model.Hall;
-import com.finalproject.tuwaiqfinal.Model.ReviewHall;
+import com.finalproject.tuwaiqfinal.Model.*;
 import com.finalproject.tuwaiqfinal.Repository.BookingRepository;
 import com.finalproject.tuwaiqfinal.Repository.CustomerRepository;
 import com.finalproject.tuwaiqfinal.Repository.HallRepository;
 import com.finalproject.tuwaiqfinal.Repository.ReviewHallRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -25,6 +29,9 @@ public class ReviewHallService {
     private final BookingRepository bookingRepository;
     private final CustomerRepository customerRepository;
     private final HallRepository hallRepository;
+
+
+    private final S3Service s3Service;
 
     public List<ReviewHall> getAllReviewHall(){
         return reviewHallRepository.findAll();
@@ -137,6 +144,54 @@ public class ReviewHallService {
 
         /// 4- return
         return out;
+    }
+
+    public void addAsset(Integer reviewId, Integer customerId, MultipartFile image) throws IOException {
+        ReviewHall reviewHall = reviewHallRepository.findById(reviewId)
+                .orElseThrow(() -> new ApiException("Review not found"));
+
+        if (!reviewHall.getCustomer().getId().equals(customerId)) {
+            throw new ApiException("Permission denied");
+        }
+
+        if (image.isEmpty()) {
+            throw new ApiException("Cannot upload an empty file");
+        }
+
+        String extension = FilenameUtils.getExtension(image.getOriginalFilename());
+        if (!"png".equals(extension) && !"jpg".equals(extension) && !"jpeg".equals(extension)) {
+            throw new ApiException("Only PNG, JPG, and JPEG files are allowed");
+        }
+
+        String s3Key = "reviews/halls/" + reviewHall.getId() + "/" + UUID.randomUUID().toString() + "." + extension;
+        reviewHall.setImageURL(s3Service.uploadFile(s3Key, image));
+        reviewHallRepository.save(reviewHall);
+    }
+
+    public AssetDTO getAsset(Integer reviewId) {
+        ReviewHall reviewHall = reviewHallRepository.findById(reviewId)
+                .orElseThrow(() -> new ApiException("Review not found"));
+
+        if (reviewHall.getImageURL() == null) {
+            throw new ApiException("Review has no image");
+        }
+
+        try {
+            URL url = new URL(reviewHall.getImageURL());
+            String key = url.getPath().substring(1);
+            byte[] data = s3Service.downloadBytes(key);
+
+            String contentType = "application/octet-stream";
+            if (key.toLowerCase().endsWith(".png")) {
+                contentType = "image/png";
+            } else if (key.toLowerCase().endsWith(".jpg") || key.toLowerCase().endsWith(".jpeg")) {
+                contentType = "image/jpeg";
+            }
+
+            return new AssetDTO(data, contentType);
+        } catch (MalformedURLException e) {
+            throw new ApiException("Invalid image URL: " + e.getMessage());
+        }
     }
 }
 
