@@ -108,7 +108,7 @@ public class ReviewSubHallService {
 
         Booking booking = bookingRepository.findBookingsByCustomerAndSubHallAndStatus(customer, subHall,"approved");
         if (booking == null) {
-            throw new ApiException("customer does not have a booking");
+            throw new ApiException("customer does not have an approved booking");
         }
 
         ReviewSubHall reviewSubHall = reviewSubHallRepository.findReviewSubHallById(reviewSubHall_id);

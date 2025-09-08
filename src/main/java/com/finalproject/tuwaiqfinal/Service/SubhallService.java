@@ -1,8 +1,8 @@
 package com.finalproject.tuwaiqfinal.Service;
 
 import com.finalproject.tuwaiqfinal.Api.ApiException;
-import com.finalproject.tuwaiqfinal.DTOout.ReviewHallDTO;
-import com.finalproject.tuwaiqfinal.DTOout.ReviewSubHallDTO;
+import com.finalproject.tuwaiqfinal.DTOout.*;
+import com.finalproject.tuwaiqfinal.Model.Game;
 import com.finalproject.tuwaiqfinal.Model.Hall;
 import com.finalproject.tuwaiqfinal.Model.Owner;
 import com.finalproject.tuwaiqfinal.Model.SubHall;
@@ -14,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -26,9 +28,46 @@ public class SubhallService {
 
 
 
-    public SubHall getSingleSubhall(Integer subHallId){
-        return subHallRepository.findById(subHallId)
-                .orElseThrow(()-> new ApiException("sub hall not found"));
+    public SubHallDTO getSingleSubhall(Integer subHallId) {
+        SubHall subHall = subHallRepository.findById(subHallId)
+                .orElseThrow(() -> new ApiException("sub hall not found"));
+
+        SubHallDTO dto = new SubHallDTO();
+
+        dto.setId(subHall.getId());
+        dto.setName(subHall.getName());
+        dto.setPricePerHour(subHall.getPricePerHour());
+        dto.setDescription(subHall.getDescription());
+
+        // تحويل Game -> GameDTO
+        Set<GameDTO> gameDTOs = subHall.getGames().stream()
+                .map(game -> {
+                    GameDTO g = new GameDTO();
+                    g.setId(game.getId());
+                    g.setColor(game.getColor());
+                    g.setIsAvailable(game.getIsAvailable());
+                    g.setNumberOfPlayer(game.getNumberOfPlayer());
+                    return g;
+                })
+                .collect(Collectors.toSet());
+
+        dto.setGames(gameDTOs);
+
+        //  ReviewSubHall -> ReviewSubHallDTO
+        List<ReviewSubHallDTOout> reviewDTOs = subHall.getReviewSubHalls().stream()
+                .map(review -> {
+                    ReviewSubHallDTOout r = new ReviewSubHallDTOout();
+                    r.setId(review.getId());
+                    r.setRating(review.getRating());
+                    r.setComment(review.getComment());
+                    r.setCreatedAt(review.getCreated_at());
+                    return r;
+                })
+                .collect(Collectors.toList());
+
+        dto.setReviewSubHalls(reviewDTOs);
+
+        return dto;
     }
 
     public void addSubHall(Integer ownerId,Integer hallId ,SubHall subHall){
