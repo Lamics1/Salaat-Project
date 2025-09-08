@@ -6,6 +6,8 @@ import com.finalproject.tuwaiqfinal.DTOin.GameAvailabilityDTO;
 import com.finalproject.tuwaiqfinal.Model.*;
 import com.finalproject.tuwaiqfinal.Repository.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -14,6 +16,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class bookingService {
     private final BookingRepository bookingRepository;
     private final CustomerRepository customerRepository;
@@ -308,4 +311,22 @@ public class bookingService {
         }
 
     }
+
+
+    @Scheduled(cron = "0 0 * * * *")    //for performance i set cron job for every hour
+    public void updateBookingStatusBasedOnEndDate() {
+        List<Booking> bookings = bookingRepository.findAll();
+        LocalDateTime now = LocalDateTime.now();
+
+        for (Booking booking : bookings) {
+            if (booking.getEndAt() != null && booking.getEndAt().isBefore(now)) {
+                if (!"completed".equalsIgnoreCase(booking.getStatus()) && !"cancelled".equalsIgnoreCase(booking.getStatus())) {
+                    booking.setStatus("completed");
+                    bookingRepository.save(booking);
+                    log.info("Booking {} status updated to completed.", booking.getId());
+                }
+            }
+        }
+    }
+
 }
