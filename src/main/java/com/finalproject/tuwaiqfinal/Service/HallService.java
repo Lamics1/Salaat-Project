@@ -53,7 +53,7 @@ public class HallService {
 
         oldHall.setName(hall.getName());
         oldHall.setDescription(hall.getDescription());
-        oldHall.setStatus(hall.getStatus());
+        oldHall.setIsAvailable(hall.getIsAvailable());
         oldHall.setLocation(hall.getLocation());
 
         //check owner
@@ -85,6 +85,14 @@ public class HallService {
         Hall hall = hallRepository.findById(hallId)
                 .orElseThrow(()-> new ApiException("hall not found"));
         return subHallRepository.getSubHallByHall(hall);
+    }
+
+    public List<Hall> getAvailableHall(){
+        return hallRepository.findAvailableHall();
+    }
+
+    public List<Hall> getUnAvailableHall(){
+        return hallRepository.findUnAvailableHall();
     }
 
 }
