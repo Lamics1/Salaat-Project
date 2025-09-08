@@ -8,6 +8,8 @@ import org.springframework.dao.InvalidDataAccessResourceUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -19,6 +21,12 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
+import software.amazon.awssdk.services.s3.model.S3Exception;
+import software.amazon.awssdk.core.exception.SdkClientException;
+import org.springframework.mail.MailException;
+import kong.unirest.UnirestException;
+import java.io.IOException;
+import org.springframework.dao.DataAccessException;
 
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.HashMap;
@@ -121,4 +129,61 @@ public class ControllerAdvise {
     public ResponseEntity<?> NoSuchKeyException(NoSuchKeyException NoSuchKeyException){
         return ResponseEntity.status(400).body(NoSuchKeyException.getMessage());
     }
+
+    // AWS S3 Service Exception
+    @ExceptionHandler(value = software.amazon.awssdk.services.s3.model.S3Exception.class)
+    public ResponseEntity<ApiResponse> handleAmazonS3Exception(software.amazon.awssdk.services.s3.model.S3Exception e) {
+        logger.error("AWS S3 service error: {}", e.getMessage(), e);
+        return ResponseEntity.status(400).body(new ApiResponse("AWS S3 service error: " + e.getMessage()));
+    }
+
+    // AWS SDK Client Exception
+    @ExceptionHandler(value = software.amazon.awssdk.core.exception.SdkClientException.class)
+    public ResponseEntity<ApiResponse> handleSdkClientException(software.amazon.awssdk.core.exception.SdkClientException e) {
+        logger.error("AWS SDK client error: {}", e.getMessage(), e);
+        return ResponseEntity.status(400).body(new ApiResponse("AWS S3 client error: " + e.getMessage()));
+    }
+
+    // Mail Exception
+    @ExceptionHandler(value = MailException.class)
+    public ResponseEntity<ApiResponse> handleMailException(MailException e) {
+        logger.error("Mail error: {}", e.getMessage(), e);
+        return ResponseEntity.status(400).body(new ApiResponse("Failed to send email: " + e.getMessage()));
+    }
+
+    // Unirest Exception
+    @ExceptionHandler(value = UnirestException.class)
+    public ResponseEntity<ApiResponse> handleUnirestException(UnirestException e) {
+        logger.error("Unirest error: {}", e.getMessage(), e);
+        return ResponseEntity.status(400).body(new ApiResponse("External service communication error: " + e.getMessage()));
+    }
+
+    // IO Exception
+    @ExceptionHandler(value = IOException.class)
+    public ResponseEntity<ApiResponse> handleIOException(IOException e) {
+        logger.error("IO error: {}", e.getMessage(), e);
+        return ResponseEntity.status(400).body(new ApiResponse("File operation error: " + e.getMessage()));
+    }
+
+    // Data Access Exception
+    @ExceptionHandler(value = DataAccessException.class)
+    public ResponseEntity<ApiResponse> handleDataAccessException(DataAccessException e) {
+        logger.error("Data access error: {}", e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse("Database access error: " + e.getMessage()));
+    }
+
+    @ExceptionHandler(value = AccessDeniedException.class)
+    public ResponseEntity<ApiResponse> handleAccessDeniedException(AccessDeniedException accessDeniedException) {
+        String message = "Access Denied: You do not have permission to access this resource.\n"+accessDeniedException.getMessage();
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ApiResponse(message));
+    }
+
+    @ExceptionHandler(value = AuthenticationException.class)
+    public ResponseEntity<ApiResponse> handleAuthenticationException(AuthenticationException authenticationException) {
+        String message = "Authentication failed: " + authenticationException.getMessage();
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse(message));
+    }
+
+
+
 }
