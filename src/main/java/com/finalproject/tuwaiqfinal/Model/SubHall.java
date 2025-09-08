@@ -33,6 +33,8 @@ public class SubHall {
     @Column(nullable = false)
     private String name;
 
+    private String imageURL;
+
     @NotNull(message = "Price per hour cannot be null")
     @Column(nullable = false)
     private Integer pricePerHour;

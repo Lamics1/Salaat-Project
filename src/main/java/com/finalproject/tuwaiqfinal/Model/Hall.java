@@ -37,6 +37,9 @@ public class Hall {
     @Column(nullable = false)
     private String description;
 
+
+    private String imageURL;
+
     @NotNull(message = "availability cannot be null")
     @Column(nullable = false)
     private Boolean isAvailable;
