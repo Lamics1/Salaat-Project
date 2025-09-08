@@ -1,6 +1,7 @@
 package com.finalproject.tuwaiqfinal.Service;
 
 import com.finalproject.tuwaiqfinal.Api.ApiException;
+import com.finalproject.tuwaiqfinal.DTOout.GameDTO;
 import com.finalproject.tuwaiqfinal.Model.*;
 import com.finalproject.tuwaiqfinal.Repository.GameRepository;
 import com.finalproject.tuwaiqfinal.Repository.HallRepository;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,8 +23,18 @@ public class GameService {
     private final HallRepository hallRepository;
     private final SubHallRepository subHallRepository;
 
-    public List<Game> getAllGame() {
-        return gameRepository.findAll();
+    public List<GameDTO> getAllGame() {
+        return gameRepository.findAll()
+                .stream()
+                .map(game -> {
+                    GameDTO dto = new GameDTO();
+                    dto.setId(game.getId());
+                    dto.setColor(game.getColor());
+                    dto.setIsAvailable(game.getIsAvailable());
+                    dto.setNumberOfPlayer(game.getNumberOfPlayer());
+                    return dto;
+                })
+                .collect(Collectors.toList());
     }
 
     public void AddGame(Integer owner_id, Integer hall_id, Integer subHall_id, Game game) {

@@ -42,7 +42,7 @@ public class SecurityConfig {
 
 
                 .requestMatchers("/api/v1/hall/get", "/api/v1/hall/get/{hallId}", "/api/v1/hall/get-subhalls/{hallId}").hasAnyAuthority("ADMIN","CUSTOMER","OWNER")
-                .requestMatchers("/api/v1/game/get").hasAnyAuthority("ADMIN","CUSTOMER","OWNER")    //todo: get dto
+                .requestMatchers("/api/v1/game/get").hasAnyAuthority("ADMIN","CUSTOMER","OWNER")
 
                 // Customer Authority
                 .requestMatchers("api/v1/customer/get").hasAuthority("CUSTOMER")
@@ -74,16 +74,16 @@ public class SecurityConfig {
                 .requestMatchers("/api/v1/game/add/{hallId}/{subHallId}").hasAuthority("OWNER")
                 .requestMatchers("/api/v1/game/update/{hallId}/{subHallId}/{gameId}").hasAuthority("OWNER")
                 .requestMatchers("/api/v1/game/delete/{hallId}/{subHallId}/{gameId}").hasAuthority("OWNER")
-                .requestMatchers("/api/v1/hall/add").hasAuthority("OWNER")  //todo: get dto
+                .requestMatchers("/api/v1/hall/add").hasAuthority("OWNER")
                 .requestMatchers("/api/v1/hall/update/{hallId}").hasAuthority("OWNER")
                 .requestMatchers("/api/v1/hall/delete/{hallId}").hasAuthority("OWNER")
                 .requestMatchers("/api/v1/owner/update").hasAuthority("OWNER")
                 .requestMatchers("/api/v1/owner/delete").hasAuthority("OWNER")
-                .requestMatchers("/api/v1/owner/get").hasAuthority("OWNER") //todo: create a dto to hide payments
+                .requestMatchers("/api/v1/owner/get").hasAuthority("OWNER")
                 .requestMatchers("/api/v1/owner/feedback/hall/{hallId}").hasAuthority("OWNER")
                 .requestMatchers("/api/v1/owner/feedback/subhall/{subHallId}").hasAuthority("OWNER")
                 .requestMatchers("/api/v1/owner/cancel/booking/{bookingId}").hasAuthority("OWNER")
-                .requestMatchers("/api/v1/subhall/add/{hallId}").hasAuthority("OWNER")//todo: get dto
+                .requestMatchers("/api/v1/subhall/add/{hallId}").hasAuthority("OWNER")
                 .requestMatchers("/api/v1/subhall/update/{subHallId}").hasAuthority("OWNER")
                 .requestMatchers("/api/v1/subhall/delete/{subHallId}").hasAuthority("OWNER")
                 .requestMatchers("/api/v1/subhall/get/{subHallId}").hasAuthority("OWNER")
