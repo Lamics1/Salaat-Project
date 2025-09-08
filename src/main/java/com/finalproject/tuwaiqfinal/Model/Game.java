@@ -34,9 +34,7 @@ public class Game {
     @Column(nullable = false)
     private String color;
 
-    @NotNull(message = "isAvailable cannot be null")
-    @Column(nullable = false)
-    private Boolean isAvailable;
+
 
     @NotNull(message = "Number of players cannot be null")
     @Column(nullable = false)

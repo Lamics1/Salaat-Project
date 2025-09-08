@@ -41,6 +41,7 @@ where b.subHall.id = :subHall
     @Query("""
 select b from Booking b
 where b.game.id = :gameId
+  and b.status = 'approved'
   and (
         (b.startAt < :endAt and b.endAt > :startAt)
      or (b.startAt >= :startAt and b.startAt < :endAt)
@@ -53,6 +54,7 @@ where b.game.id = :gameId
     @Query("""
 select b from Booking b
 where b.game.id = :gameId
+  and b.status = 'approved'
   and b.id <> :excludeBookingId
   and (
         (b.startAt < :endAt and b.endAt > :startAt)

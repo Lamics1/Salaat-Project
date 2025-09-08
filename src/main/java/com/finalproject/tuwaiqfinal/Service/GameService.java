@@ -30,7 +30,7 @@ public class GameService {
                     GameDTO dto = new GameDTO();
                     dto.setId(game.getId());
                     dto.setColor(game.getColor());
-                    dto.setIsAvailable(game.getIsAvailable());
+
                     dto.setNumberOfPlayer(game.getNumberOfPlayer());
                     return dto;
                 })
@@ -76,7 +76,7 @@ public class GameService {
       oldGame.setSubHall(subHall);
 
       oldGame.setColor(game.getColor());
-      oldGame.setIsAvailable(game.getIsAvailable());
+      
       oldGame.setNumberOfPlayer(game.getNumberOfPlayer());
 
       gameRepository.save(oldGame);
