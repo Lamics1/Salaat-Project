@@ -93,6 +93,7 @@
   
 - Use Case Diagram: 🔗 Link  
 - Figma Design: 🔗 [Link  ](https://www.figma.com/design/ImpAUj7GfdwHzNIl8hSUaE/final-project?node-id=0-1&t=wh64J53Xn4RKFpLy-1)
+- Postman Documentation: 🔗 [Link  ](https://documenter.getpostman.com/view/48183973/2sB3HnJegq)
 
 ---
 
