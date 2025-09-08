@@ -50,8 +50,6 @@ public class Booking {
     @Column(nullable = false)
     private Double totalPrice;
 
-    @Column(nullable = false)
-    private Boolean isSplit; // todo:delete this feature.
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)

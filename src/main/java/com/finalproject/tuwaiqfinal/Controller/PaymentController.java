@@ -29,10 +29,10 @@ public class PaymentController {
         return paymentService.processPayment(paymentRequest);
     }
 
-    // get transaction detail:
-    @GetMapping("/get/status/{statusId}")
-    public ResponseEntity<?> getPaymentStatus(@PathVariable String statusId){
-        return ResponseEntity.status(200).body(paymentService.getPaymentStatus(statusId));
+    // get payment status:
+    @GetMapping("/get/status/{paymentId}")
+    public ResponseEntity<?> getPaymentStatus(@AuthenticationPrincipal User customer,@PathVariable String paymentId){
+        return ResponseEntity.status(200).body(paymentService.getPaymentStatus(customer.getId(),paymentId));
     }
 
     // payment by user
@@ -83,6 +83,19 @@ public class PaymentController {
                         "attachment; filename=\"" + filename + "\"; filename*=UTF-8''" + java.net.URLEncoder.encode(filename, java.nio.charset.StandardCharsets.UTF_8))
                 .body(data);
     }
+
+    @GetMapping("/get/all")
+    public ResponseEntity<?> getAllPaymentsByCustomer(@AuthenticationPrincipal User customer) {
+        return ResponseEntity.status(200).body(paymentService.getAllPaymentByCustomer(customer.getId()));
+    }
+
+    @GetMapping("/get/status/filter/{status}")
+    public ResponseEntity<?> getAllPaymentsByStatus(@AuthenticationPrincipal User customer,
+                                                    @PathVariable String status) {
+        return ResponseEntity.status(200)
+                .body(paymentService.getAllPaymentByCustomerAndStatus(customer.getId(), status));
+    }
+
 
 }
 
