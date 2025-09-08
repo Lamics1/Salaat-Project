@@ -8,6 +8,7 @@ import org.springframework.dao.InvalidDataAccessResourceUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -120,5 +121,10 @@ public class ControllerAdvise {
     @ExceptionHandler(NoSuchKeyException.class)
     public ResponseEntity<?> NoSuchKeyException(NoSuchKeyException NoSuchKeyException){
         return ResponseEntity.status(400).body(NoSuchKeyException.getMessage());
+    }
+
+    @ExceptionHandler(InternalAuthenticationServiceException.class)
+    public ResponseEntity<?> InternalAuthenticationServiceException(InternalAuthenticationServiceException InternalAuthenticationServiceException){
+        return ResponseEntity.status(400).body(InternalAuthenticationServiceException.getMessage());
     }
 }

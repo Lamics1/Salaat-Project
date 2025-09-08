@@ -2,24 +2,29 @@ package com.finalproject.tuwaiqfinal.Config;
 
 import com.finalproject.tuwaiqfinal.Service.MyUserDetailsService;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-
     private final MyUserDetailsService myUserDetailsService;
-
+    private final JwtAuthenticationFilter jwtFilter;
     @Bean
-    public DaoAuthenticationProvider daoAuthenticationProvider() {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
+    }
+    @Bean
+    public DaoAuthenticationProvider daoAuthenticationProvider(){
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setUserDetailsService(myUserDetailsService);
         daoAuthenticationProvider.setPasswordEncoder(new BCryptPasswordEncoder());
@@ -27,18 +32,18 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.csrf().disable()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+        http.csrf().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authenticationProvider(daoAuthenticationProvider())
                 .authorizeHttpRequests()
-
                 // Permit All
                 .requestMatchers("/api/v1/customer/register", "/api/v1/owner/register").permitAll()
                 .requestMatchers("/api/v1/payments/callback").permitAll()
                 .requestMatchers("/api/v1/review-hall/getAll").permitAll()
+                //Login
+                .requestMatchers("/api/v1/auth/login").permitAll()
 
                 // Shared Access (Admin, Customer, Owner)
                 .requestMatchers("/api/v1/hall/get", "/api/v1/hall/get/{hallId}", "/api/v1/hall/get-subhalls/{hallId}").hasAnyAuthority("ADMIN", "CUSTOMER", "OWNER")
@@ -110,13 +115,11 @@ public class SecurityConfig {
 
                 .anyRequest().authenticated()
                 .and()
-                .logout().logoutUrl("api/v1/auth/logout")
-                .deleteCookies("JSESSIONID")
-                .invalidateHttpSession(true)
-                .and()
-                .httpBasic();   // auth
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
-        return httpSecurity.build();
+        return http.build();
+
     }
+
 
 }

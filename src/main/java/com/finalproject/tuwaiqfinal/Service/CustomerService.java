@@ -9,7 +9,7 @@ import com.finalproject.tuwaiqfinal.Model.User;
 import com.finalproject.tuwaiqfinal.Repository.BookingRepository;
 import com.finalproject.tuwaiqfinal.Repository.CustomerRepository;
 import com.finalproject.tuwaiqfinal.Repository.GameRepository;
-import com.finalproject.tuwaiqfinal.Repository.UserRepository;
+import com.finalproject.tuwaiqfinal.Repository.AuthRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ import java.util.List;
 public class CustomerService {
 //  repos DI
     private final CustomerRepository customerRepository;
-    private final UserRepository userRepository;
+    private final AuthRepository authRepository;
 
 //  services DI
     private final AiService aiService;
@@ -76,7 +76,7 @@ public class CustomerService {
 
 
         ///  4- save user
-        userRepository.save(user);
+        authRepository.save(user);
 
         /// 3- save customer
         customerRepository.save(customer);
@@ -114,7 +114,7 @@ public class CustomerService {
         customerRepository.save(oldCustomer);
 
         /// 6- Save user
-        userRepository.save(user);
+        authRepository.save(user);
     }
 
 
@@ -132,7 +132,7 @@ public class CustomerService {
 
         // hence, no need for deleting booking that related with customer.
         /// 3- delete parent:
-        userRepository.delete(customer.getUser());
+        authRepository.delete(customer.getUser());
     }
 
     public AnalyseGameDTO analyseGame(byte[] gameImage){
