@@ -19,41 +19,43 @@ public class SecurityConfig {
     private final MyUserDetailsService myUserDetailsService;
 
     @Bean
-    public DaoAuthenticationProvider daoAuthenticationProvider(){
+    public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setUserDetailsService(myUserDetailsService);
         daoAuthenticationProvider.setPasswordEncoder(new BCryptPasswordEncoder());
         return daoAuthenticationProvider;
     }
 
-
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf().disable()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 .and()
                 .authenticationProvider(daoAuthenticationProvider())
                 .authorizeHttpRequests()
+
                 // Permit All
                 .requestMatchers("/api/v1/customer/register", "/api/v1/owner/register").permitAll()
                 .requestMatchers("/api/v1/payments/callback").permitAll()
                 .requestMatchers("/api/v1/review-hall/getAll").permitAll()
 
-
-                .requestMatchers("/api/v1/hall/get", "/api/v1/hall/get/{hallId}", "/api/v1/hall/get-subhalls/{hallId}").hasAnyAuthority("ADMIN","CUSTOMER","OWNER")
-                .requestMatchers("/api/v1/game/get").hasAnyAuthority("ADMIN","CUSTOMER","OWNER")
+                // Shared Access (Admin, Customer, Owner)
+                .requestMatchers("/api/v1/hall/get", "/api/v1/hall/get/{hallId}", "/api/v1/hall/get-subhalls/{hallId}").hasAnyAuthority("ADMIN", "CUSTOMER", "OWNER")
+                .requestMatchers("/api/v1/game/get").hasAnyAuthority("ADMIN", "CUSTOMER", "OWNER")
+                .requestMatchers("/api/v1/hall/get/available").hasAnyAuthority("ADMIN", "CUSTOMER", "OWNER")
+                .requestMatchers("/api/v1/hall/get/unavailable").hasAnyAuthority("ADMIN", "CUSTOMER", "OWNER")
 
                 // Customer Authority
-                .requestMatchers("api/v1/customer/get").hasAuthority("CUSTOMER")
+                .requestMatchers("/api/v1/customer/get").hasAuthority("CUSTOMER")
+                .requestMatchers("/api/v1/customer/update").hasAuthority("CUSTOMER")
+                .requestMatchers("/api/v1/customer/delete").hasAuthority("CUSTOMER")
+                .requestMatchers("/api/v1/customer/game/analyse").hasAuthority("CUSTOMER")
+                .requestMatchers("/api/v1/customer/booking/advice").hasAuthority("CUSTOMER")
                 .requestMatchers("/api/v1/booking/get").hasAuthority("CUSTOMER")
                 .requestMatchers("/api/v1/booking/add/subhall/{subhallId}").hasAuthority("CUSTOMER")
                 .requestMatchers("/api/v1/booking/update/booking/{bookingId}").hasAuthority("CUSTOMER")
                 .requestMatchers("/api/v1/booking/delete/booking/{bookingId}").hasAuthority("CUSTOMER")
-                .requestMatchers("/api/v1/customer/get").hasAuthority("CUSTOMER")
-                .requestMatchers("/api/v1/customer/update").hasAuthority("CUSTOMER")
-                .requestMatchers("/api/v1/customer/delete").hasAuthority("CUSTOMER")
-                .requestMatchers("/api/v1/customer/analyse").hasAuthority("CUSTOMER")
                 .requestMatchers("/api/v1/customer/cancel/booking/{bookingId}").hasAuthority("CUSTOMER")
                 .requestMatchers("/api/v1/review-hall/add/{hallId}").hasAuthority("CUSTOMER")
                 .requestMatchers("/api/v1/review-hall/update/{hallId}/{reviewHallId}").hasAuthority("CUSTOMER")
@@ -96,14 +98,13 @@ public class SecurityConfig {
                 .requestMatchers("/api/v1/review-sub-hall/get").hasAuthority("ADMIN")
                 .requestMatchers("/api/v1/customer/getall").hasAuthority("ADMIN")
 
-
                 .anyRequest().authenticated()
                 .and()
                 .logout().logoutUrl("api/v1/auth/logout")
                 .deleteCookies("JSESSIONID")
                 .invalidateHttpSession(true)
                 .and()
-                .httpBasic();   //auth
+                .httpBasic();   // auth
 
         return httpSecurity.build();
     }

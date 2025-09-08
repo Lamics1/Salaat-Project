@@ -34,7 +34,7 @@ public class HallService {
                     dto.setId(hall.getId());
                     dto.setName(hall.getName());
                     dto.setDescription(hall.getDescription());
-                    dto.setIsAvailable(hall.getStatus());
+                    dto.setIsAvailable(hall.getIsAvailable());
                     dto.setLocation(hall.getLocation());
 
                     // SubHalls -> SubHallDTO
@@ -96,7 +96,7 @@ public class HallService {
                     dto.setId(hall.getId());
                     dto.setName(hall.getName());
                     dto.setDescription(hall.getDescription());
-                    dto.setIsAvailable(hall.getStatus());
+                    dto.setIsAvailable(hall.getIsAvailable());
                     dto.setLocation(hall.getLocation());
 
                     // SubHalls -> SubHallDTO
@@ -155,7 +155,7 @@ public class HallService {
         dto.setId(hall.getId());
         dto.setName(hall.getName());
         dto.setDescription(hall.getDescription());
-        dto.setIsAvailable(hall.getStatus()); // إذا عندك status بدل isAvailable
+        dto.setIsAvailable(hall.getIsAvailable()); // إذا عندك status بدل isAvailable
         dto.setLocation(hall.getLocation());
 
         // SubHalls -> SubHallDTO
@@ -222,7 +222,7 @@ public class HallService {
 
         oldHall.setName(hall.getName());
         oldHall.setDescription(hall.getDescription());
-        oldHall.setStatus(hall.getStatus());
+        oldHall.setIsAvailable(hall.getIsAvailable());
         oldHall.setLocation(hall.getLocation());
 
         //check owner
@@ -254,6 +254,14 @@ public class HallService {
         Hall hall = hallRepository.findById(hallId)
                 .orElseThrow(()-> new ApiException("hall not found"));
         return subHallRepository.getSubHallByHall(hall);
+    }
+
+    public List<Hall> getAvailableHall(){
+        return hallRepository.findAvailableHall();
+    }
+
+    public List<Hall> getUnAvailableHall(){
+        return hallRepository.findUnAvailableHall();
     }
 
 }

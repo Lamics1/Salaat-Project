@@ -39,7 +39,7 @@ public class Hall {
 
     @NotNull(message = "Status cannot be null")
     @Column(nullable = false)
-    private Boolean status;
+    private Boolean isAvailable;
 
     @NotEmpty(message = "Location cannot be empty")
     @Column(nullable = false)
