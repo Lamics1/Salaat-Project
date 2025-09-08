@@ -313,7 +313,7 @@ public class bookingService {
     }
 
 
-    @Scheduled(cron = "0 0 * * * *")    //for performance i set cron job for every hour
+    @Scheduled(cron = "0 */5 * * * *")    //for performance i set cron job for every hour
     public void updateBookingStatusBasedOnEndDate() {
         List<Booking> bookings = bookingRepository.findAll();
         LocalDateTime now = LocalDateTime.now();
