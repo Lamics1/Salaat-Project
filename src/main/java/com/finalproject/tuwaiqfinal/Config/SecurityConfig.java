@@ -41,11 +41,15 @@ public class SecurityConfig {
                 .requestMatchers("/api/v1/review-hall/getAll").permitAll()
 
 
+
                 .requestMatchers("/api/v1/hall/get", "/api/v1/hall/get/{hallId}", "/api/v1/hall/get-subhalls/{hallId}").hasAnyAuthority("ADMIN","CUSTOMER","OWNER")
                 .requestMatchers("/api/v1/game/get").hasAnyAuthority("ADMIN","CUSTOMER","OWNER")    //todo: get dto
+                .requestMatchers("api/v1/hall/get/available").hasAnyAuthority("ADMIN","CUSTOMER","OWNER")
+                .requestMatchers("api/v1/hall/get/unavailable").hasAnyAuthority("ADMIN","CUSTOMER","OWNER")
 
                 // Customer Authority
-                .requestMatchers("api/v1/customer/get").hasAuthority("CUSTOMER")
+                .requestMatchers("/api/v1/customer/booking/advice").hasAuthority("CUSTOMER")
+                .requestMatchers("/api/v1/customer/get").hasAuthority("CUSTOMER")
                 .requestMatchers("/api/v1/booking/get").hasAuthority("CUSTOMER")
                 .requestMatchers("/api/v1/booking/add/subhall/{subhallId}").hasAuthority("CUSTOMER")
                 .requestMatchers("/api/v1/booking/update/booking/{bookingId}").hasAuthority("CUSTOMER")
@@ -53,7 +57,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/v1/customer/get").hasAuthority("CUSTOMER")
                 .requestMatchers("/api/v1/customer/update").hasAuthority("CUSTOMER")
                 .requestMatchers("/api/v1/customer/delete").hasAuthority("CUSTOMER")
-                .requestMatchers("/api/v1/customer/analyse").hasAuthority("CUSTOMER")
+                .requestMatchers("/api/v1/customer/game/analyse").hasAuthority("CUSTOMER")
                 .requestMatchers("/api/v1/customer/cancel/booking/{bookingId}").hasAuthority("CUSTOMER")
                 .requestMatchers("/api/v1/review-hall/add/{hallId}").hasAuthority("CUSTOMER")
                 .requestMatchers("/api/v1/review-hall/update/{hallId}/{reviewHallId}").hasAuthority("CUSTOMER")

@@ -168,7 +168,10 @@ public class CustomerService {
 
         // delete booking form game:
         bookingRepository.delete(booking);
+    }
 
+    public String customerBookingAdvice(Integer customerId){
+        return aiService.userBookingFeedback(bookingRepository.findBookingsByCustomer_Id(customerId));
     }
 
 

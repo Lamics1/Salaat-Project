@@ -47,7 +47,7 @@ public class CustomerController {
         return ResponseEntity.status(200).body(new ApiResponse("customer deleted successfully"));
     }
 
-    @GetMapping("/analyse")
+    @GetMapping("/game/analyse")
     public ResponseEntity<?> analyseGame(@RequestBody byte[] image){
         return ResponseEntity.status(200).body(customerService.analyseGame(image));
     }
@@ -59,5 +59,10 @@ public class CustomerController {
     ) {
         customerService.customerCancelBooking(user.getId(), bookingId);
         return ResponseEntity.status(200).body(new ApiResponse("Booking has been cancelled successfully"));
+    }
+
+    @GetMapping("/booking/advice")
+    public ResponseEntity<?> customerBookingsAdvisor(@AuthenticationPrincipal User user){
+        return ResponseEntity.ok(customerService.customerBookingAdvice(user.getId()));
     }
 }

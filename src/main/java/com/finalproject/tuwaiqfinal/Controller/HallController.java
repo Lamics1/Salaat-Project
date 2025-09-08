@@ -54,4 +54,14 @@ public class HallController {
     public ResponseEntity<?> getAllSubHalls(@PathVariable Integer hallId){
         return ResponseEntity.ok(hallService.getAllSubHalls(hallId));
     }
+
+    @GetMapping("/get/available")
+    public ResponseEntity<?> getAvailable(){
+        return ResponseEntity.ok(hallService.getAvailableHall());
+    }
+
+    @GetMapping("/get/unavailable")
+    public ResponseEntity<?> getUnAvailable(){
+        return ResponseEntity.ok(hallService.getUnAvailableHall());
+    }
 }
