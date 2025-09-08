@@ -203,12 +203,7 @@ public class bookingService {
         if(booking.getStatus().equals("approved"))
             throw new ApiException("booking approved, can't cancel this booking");
 
-        /// 5- release game availability for this booking
-        Game game = booking.getGame();
-        if (game != null) {
-            game.setIsAvailable(true);
-            gameRepository.save(game);
-        }
+
 
         /// 6- delete
         bookingRepository.delete(booking);
@@ -255,7 +250,7 @@ public class bookingService {
         LocalDateTime endTime = startTime.plusMinutes(durationMinutes);
 
         // 3- Get all games in this subhall
-        List<Game> allGames = gameRepository.findAllBySubHallAndIsAvailable(subHall, true);
+        List<Game> allGames = gameRepository.findAllBySubHall(subHall);
 
         // 4- Check availability for each game
         List<GameAvailabilityDTO> availableGames = new ArrayList<>();
@@ -318,11 +313,8 @@ public class bookingService {
 
         for (Booking booking : bookings) {
             if (booking.getEndAt() != null && booking.getEndAt().isBefore(now)) {
-                if (!"completed".equalsIgnoreCase(booking.getStatus()) && !"cancelled".equalsIgnoreCase(booking.getStatus())) {
+                if ("approved".equalsIgnoreCase(booking.getStatus())) {
                     booking.setStatus("completed");
-                    Game game = booking.getGame();
-                    game.setIsAvailable(true);
-                    gameRepository.save(game);
                     bookingRepository.save(booking);
                     log.info("Booking {} status updated to completed.", booking.getId());
                 }

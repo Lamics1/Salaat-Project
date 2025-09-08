@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 public class GameDTO {
     private Integer id;
     private String color;
-    private Boolean isAvailable;
+
     private Integer numberOfPlayer;
 }
