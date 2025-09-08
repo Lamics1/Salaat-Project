@@ -60,7 +60,6 @@ public class HallService {
                                             GameDTO g = new GameDTO();
                                             g.setId(game.getId());
                                             g.setColor(game.getColor());
-                                            g.setIsAvailable(game.getIsAvailable());
                                             g.setNumberOfPlayer(game.getNumberOfPlayer());
                                             return g;
                                         })
@@ -122,7 +121,6 @@ public class HallService {
                                             GameDTO g = new GameDTO();
                                             g.setId(game.getId());
                                             g.setColor(game.getColor());
-                                            g.setIsAvailable(game.getIsAvailable());
                                             g.setNumberOfPlayer(game.getNumberOfPlayer());
                                             return g;
                                         })
@@ -181,7 +179,6 @@ public class HallService {
                                 GameDTO g = new GameDTO();
                                 g.setId(game.getId());
                                 g.setColor(game.getColor());
-                                g.setIsAvailable(game.getIsAvailable());
                                 g.setNumberOfPlayer(game.getNumberOfPlayer());
                                 return g;
                             })

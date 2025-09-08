@@ -53,7 +53,6 @@ public class SubhallService {
                     GameDTO g = new GameDTO();
                     g.setId(game.getId());
                     g.setColor(game.getColor());
-                    g.setIsAvailable(game.getIsAvailable());
                     g.setNumberOfPlayer(game.getNumberOfPlayer());
                     return g;
                 })

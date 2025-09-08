@@ -170,6 +170,16 @@ public class PaymentService {
             throw new ApiException("booking status has been handled before");
         }
 
+        // 4.5- Final conflict check before payment
+        List<Booking> conflicts = bookingRepository.findConflictBookingsForGame(
+                booking.getGame().getId(), booking.getStartAt(), booking.getEndAt());
+
+        if(!conflicts.isEmpty()) {
+            throw new ApiException("This time slot was just booked by someone else! Please try a different time");
+        }
+
+
+
         /// 5- set payment details
         paymentRequest.setAmount(booking.getTotalPrice());
         paymentRequest.setDescription("customer booking for"+booking.getSubHall().getDescription());
@@ -225,10 +235,9 @@ public class PaymentService {
                 booking.setStatus(message); // APPROVED
                 bookingRepository.save(booking);
 
-                // 4. update game availability
                 Game game = booking.getGame();
-                game.setIsAvailable(false);
-                gameRepository.save(game);
+
+
 
 
                 byte[] pdf = invoicePdfService.generateInvoicePdf(booking.getSubHall().getHall(),
