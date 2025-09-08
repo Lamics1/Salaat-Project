@@ -237,8 +237,8 @@
 ### 🔗 LinkedIn  
 
 - yasir alateeq
-- https:Ziyad Alghamdi  
-- https:Abdulrahman Lami
+- Ziyad Alghamdi  
+- Abdulrahman Lami
 
 
 For questions or support:  
