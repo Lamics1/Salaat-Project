@@ -1,14 +1,21 @@
 package com.finalproject.tuwaiqfinal.Controller;
 
 import com.finalproject.tuwaiqfinal.Api.ApiResponse;
+import com.finalproject.tuwaiqfinal.DTOout.AssetDTO;
 import com.finalproject.tuwaiqfinal.Model.Hall;
 import com.finalproject.tuwaiqfinal.Model.User;
 import com.finalproject.tuwaiqfinal.Service.HallService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/v1/hall")
@@ -63,5 +70,22 @@ public class HallController {
     @GetMapping("/get/unavailable")
     public ResponseEntity<?> getUnAvailable(){
         return ResponseEntity.ok(hallService.getUnAvailableHall());
+    }
+
+    @PutMapping("/add/asset/{hallId}")
+    public ResponseEntity<?> addAsset(@AuthenticationPrincipal User user, @PathVariable Integer hallId, @RequestParam("file") MultipartFile file) throws IOException {
+        hallService.addAsset(hallId,user.getId(),file);
+        return ResponseEntity.ok(new ApiResponse("asset added"));
+    }
+
+    @GetMapping("/get/asset/{hallId}")
+    public ResponseEntity<byte[]> getAsset(@AuthenticationPrincipal User user, @PathVariable Integer hallId) {
+        AssetDTO asset = hallService.getAsset(hallId, user.getId());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType(asset.getContentType()));
+        headers.setContentLength(asset.getData().length);
+
+        return new ResponseEntity<>(asset.getData(), headers, HttpStatus.OK);
     }
 }

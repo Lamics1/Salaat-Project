@@ -1,6 +1,7 @@
 package com.finalproject.tuwaiqfinal.Service;
 
 import com.finalproject.tuwaiqfinal.Api.ApiException;
+import com.finalproject.tuwaiqfinal.DTOout.AssetDTO;
 import com.finalproject.tuwaiqfinal.DTOout.GameDTO;
 import com.finalproject.tuwaiqfinal.DTOout.HallDTO;
 import com.finalproject.tuwaiqfinal.DTOout.SubHallDTO;
@@ -12,10 +13,16 @@ import com.finalproject.tuwaiqfinal.Repository.HallRepository;
 import com.finalproject.tuwaiqfinal.Repository.OwnerRepository;
 import com.finalproject.tuwaiqfinal.Repository.SubHallRepository;
 import lombok.AllArgsConstructor;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,6 +32,7 @@ public class HallService {
     private final HallRepository hallRepository;
     private final OwnerRepository ownerRepository;
     private final SubHallRepository subHallRepository;
+    private final S3Service s3Service;
 
     public List<HallDTO> getAllHalls() {
         return hallRepository.findAll()
@@ -208,6 +216,7 @@ public class HallService {
         Owner owner = ownerRepository.findById(ownerId)
                 .orElseThrow(()->new ApiException("owner not found"));
 
+        hall.setImageURL(null);
         hall.setOwner(owner);
         hallRepository.save(hall);
     }
@@ -259,6 +268,61 @@ public class HallService {
 
     public List<Hall> getUnAvailableHall(){
         return hallRepository.findUnAvailableHall();
+    }
+
+    public void addAsset(Integer hallId, Integer ownerId, MultipartFile image) throws IOException {
+        Hall hall = hallRepository.findById(hallId)
+                .orElseThrow(()-> new ApiException("hall not found"));
+
+        Owner owner = ownerRepository.findById(ownerId)
+                .orElseThrow(()->new ApiException("owner not found"));
+
+        if (!hall.getOwner().equals(owner))
+            throw new ApiException("permission denied");
+
+        if (image.isEmpty())
+            throw new ApiException("Cannot upload an empty file");
+
+        String extension = FilenameUtils.getExtension(image.getOriginalFilename());
+
+        if (!"png".equals(extension) && !"jpg".equals(extension) && !"jpeg".equals(extension))
+            throw new ApiException("Only PNG, JPG, and JPEG files are allowed");
+
+        String s3Key = "halls/" + hall.getId() + "/" + UUID.randomUUID().toString() + "." + extension;
+        hall.setImageURL(s3Service.uploadFile(s3Key,image));
+        hallRepository.save(hall);
+    }
+
+    public AssetDTO getAsset(Integer hallId, Integer ownerId){
+        Hall hall = hallRepository.findById(hallId)
+                .orElseThrow(()->new ApiException("hall not found"));
+
+        Owner owner = ownerRepository.findById(ownerId)
+                .orElseThrow(()-> new ApiException("owner not found"));
+
+        if (!hall.getOwner().equals(owner))
+            throw new ApiException("permission denied");
+
+        if (hall.getImageURL() == null) {
+            throw new ApiException("Hall has no image");
+        }
+
+        try {
+            URL url = new URL(hall.getImageURL());
+            String key = url.getPath().substring(1);
+            byte[] data = s3Service.downloadBytes(key);
+
+            String contentType = "application/octet-stream"; // Default
+            if (key.toLowerCase().endsWith(".png")) {
+                contentType = "image/png";
+            } else if (key.toLowerCase().endsWith(".jpg") || key.toLowerCase().endsWith(".jpeg")) {
+                contentType = "image/jpeg";
+            }
+
+            return new AssetDTO(data, contentType);
+        } catch (MalformedURLException e) {
+            throw new ApiException("Invalid image URL: " + e.getMessage());
+        }
     }
 
 }

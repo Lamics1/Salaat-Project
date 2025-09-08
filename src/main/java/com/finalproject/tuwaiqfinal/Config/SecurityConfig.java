@@ -45,6 +45,10 @@ public class SecurityConfig {
                 .requestMatchers("/api/v1/game/get").hasAnyAuthority("ADMIN", "CUSTOMER", "OWNER")
                 .requestMatchers("/api/v1/hall/get/available").hasAnyAuthority("ADMIN", "CUSTOMER", "OWNER")
                 .requestMatchers("/api/v1/hall/get/unavailable").hasAnyAuthority("ADMIN", "CUSTOMER", "OWNER")
+                .requestMatchers("/api/v1/hall/get/asset/**").hasAnyAuthority("ADMIN", "CUSTOMER", "OWNER")
+                .requestMatchers("/api/v1/subhall/get/asset/**").hasAnyAuthority("ADMIN", "CUSTOMER", "OWNER")
+                .requestMatchers("/api/v1/review-hall/get/asset/**").hasAnyAuthority("ADMIN", "CUSTOMER", "OWNER")
+                .requestMatchers("/api/v1/review-sub-hall/get/asset/**").hasAnyAuthority("ADMIN", "CUSTOMER", "OWNER")
 
                 // Customer Authority
                 .requestMatchers("/api/v1/customer/get").hasAuthority("CUSTOMER")
@@ -67,6 +71,8 @@ public class SecurityConfig {
                 .requestMatchers("/api/v1/payments/card").hasAuthority("CUSTOMER")
                 .requestMatchers("/api/v1/payments/get/status/{paymentId}").hasAuthority("CUSTOMER")
                 .requestMatchers("/api/v1/payments/download/invoice/{bookingId}").hasAuthority("CUSTOMER")
+                .requestMatchers("/api/v1/review-hall/add/asset/**").hasAuthority("CUSTOMER")
+                .requestMatchers("/api/v1/review-sub-hall/add/asset/**").hasAuthority("CUSTOMER")
                 .requestMatchers("/api/v1/payments/get/all").hasAuthority("CUSTOMER")
                 .requestMatchers("/api/v1/payments/get/status/filter/{status}").hasAuthority("CUSTOMER")
 
@@ -92,6 +98,8 @@ public class SecurityConfig {
                 .requestMatchers("/api/v1/subhall/delete/{subHallId}").hasAuthority("OWNER")
                 .requestMatchers("/api/v1/subhall/get/{subHallId}").hasAuthority("OWNER")
                 .requestMatchers("/api/v1/subhall/hall/{hallId}/subhall/{subHallId}/budget/{pricePerHour}").hasAuthority("OWNER")
+                .requestMatchers("/api/v1/hall/add/asset/**").hasAuthority("OWNER")
+                .requestMatchers("/api/v1/subhall/add/asset/**").hasAuthority("OWNER")
 
                 // Admin Authority
                 .requestMatchers("/api/v1/owner/get-all").hasAuthority("ADMIN")
