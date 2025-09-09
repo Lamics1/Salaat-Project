@@ -240,9 +240,9 @@
 
 ### 🔗 LinkedIn  
 
-- yasir alateeq
-- Ziyad Alghamdi  
-- Abdulrahman Lami : 
+- yasir alateeq:
+- Ziyad Alghamdi:
+- Abdulrahman Lami: www.linkedin.com/in/lami-
 
 
 For questions or support:  
