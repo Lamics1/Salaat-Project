@@ -92,7 +92,9 @@
 <img width="1520" height="982" alt="Screenshot 2025-09-09 015535" src="https://github.com/user-attachments/assets/d2807678-bc10-4724-922f-d591bce557c4" />
   
 - Use Case Diagram:
-  
+<img width="1231" height="696" alt="image" src="https://github.com/user-attachments/assets/6199f230-2ba7-404e-b01d-77dac8d8d096" />
+
+
 - Figma Design: 🔗 [Link  ](https://www.figma.com/design/ImpAUj7GfdwHzNIl8hSUaE/final-project?node-id=0-1&t=wh64J53Xn4RKFpLy-1)
 - Postman Documentation: 🔗 [Link  ](https://documenter.getpostman.com/view/48183973/2sB3HnJegq)
 
